@@ -1,0 +1,297 @@
+# Copyright (C) 2021 Fondy - Unified Payment Platform
+# This file is distributed under the same license as the WooCommerce - Fondy payment gateway plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce - Fondy payment gateway 3.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fondy-woocommerce-payment-gateway\n"
+"Last-Translator: Dmytro Barybin <d.baribin@fondy.eu>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-08-25T16:52:55+03:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: fondy-woocommerce-payment-gateway\n"
+
+#. Plugin Name of the plugin
+msgid "WooCommerce - Flitt payment gateway"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://flitt.com/en/cms/wordpress/woocommerce/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Flitt Payment Gateway for WooCommerce."
+msgstr ""
+
+#. Author of the plugin
+msgid "Flitt - Unified Payment Platform"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://flitt.com"
+msgstr ""
+
+#: fondy-woocommerce-payment-gateway.php:100
+msgid "Settings"
+msgstr ""
+
+#. translators: 1) required WC version 2) current WC version
+#: fondy-woocommerce-payment-gateway.php:173
+msgid "Payment Gateway Flitt requires WooCommerce %1$s or greater to be installed and active. WooCommerce %2$s is no longer supported."
+msgstr ""
+
+#. translators: 1) required PHP version 2) current PHP version
+#: fondy-woocommerce-payment-gateway.php:180
+msgid "The minimum PHP version required for Flitt Payment Gateway is %1$s. You are running %2$s."
+msgstr ""
+
+#: includes/abstract-wc-fondy-payment-gateway.php:99
+msgid "Order №: "
+msgstr ""
+
+#: includes/abstract-wc-fondy-payment-gateway.php:319
+msgid "Embedded"
+msgstr ""
+
+#: includes/abstract-wc-fondy-payment-gateway.php:323
+msgid "Hosted"
+msgstr ""
+
+#: includes/abstract-wc-fondy-payment-gateway.php:327
+msgid "Seamless"
+msgstr ""
+
+#: includes/abstract-wc-fondy-payment-gateway.php:372
+msgid "Default status"
+msgstr ""
+
+#. translators: 1) fondy order status 2) fondy order id
+#: includes/abstract-wc-fondy-payment-gateway.php:415
+#: includes/abstract-wc-fondy-payment-gateway.php:420
+msgid "Transaction ERROR: order %1$s<br/>Flitt ID: %2$s"
+msgstr ""
+
+#: includes/abstract-wc-fondy-payment-gateway.php:424
+msgid "Unhandled fondy order status"
+msgstr ""
+
+#. translators: fondy order id
+#: includes/abstract-wc-fondy-payment-gateway.php:448
+msgid "Flitt payment successful.<br/>Flitt ID: %1$s<br/>"
+msgstr ""
+
+#: includes/compat/class-wc-fondy-pre-orders-compat.php:40
+msgid "Flitt capture successful."
+msgstr ""
+
+#. translators: error message
+#: includes/compat/class-wc-fondy-pre-orders-compat.php:47
+msgid "Pre-order payment for order failed. Reason: %s"
+msgstr ""
+
+#: includes/compat/class-wc-fondy-pre-orders-compat.php:61
+msgid "Note: transactions by using Pre-Orders must be finished in 7 days term or it will be auto-captured."
+msgstr ""
+
+#: includes/compat/class-wc-fondy-subscriptions-compat.php:32
+msgid "Payment free trial verification"
+msgstr ""
+
+#: includes/compat/class-wc-fondy-subscriptions-compat.php:47
+msgid "You must be logged in."
+msgstr ""
+
+#. translators: error message
+#: includes/compat/class-wc-fondy-subscriptions-compat.php:146
+msgid "Subscription payment failed. Reason: %s"
+msgstr ""
+
+#: includes/integration-types/Fondy_Seamless.php:37
+msgid "Card Number:"
+msgstr ""
+
+#: includes/integration-types/Fondy_Seamless.php:43
+msgid "XXXXXXXXXXXXXXXX"
+msgstr ""
+
+#: includes/integration-types/Fondy_Seamless.php:49
+msgid "Expiry Date:"
+msgstr ""
+
+#: includes/integration-types/Fondy_Seamless.php:52
+msgid "CVV2:"
+msgstr ""
+
+#: includes/integration-types/Fondy_Seamless.php:68
+msgid "XXX"
+msgstr ""
+
+#: includes/integration-types/Fondy_Seamless.php:74
+msgid "Pay"
+msgstr ""
+
+#: includes/integration-types/Fondy_Seamless.php:91
+msgid "Place order"
+msgstr ""
+
+#. translators: link
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:15
+#: includes/payment-methods/class-wc-gateway-fondy-localmethods.php:16
+msgid "All other general Fondy settings can be adjusted <a href=\"%s\">here</a>."
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:43
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:79
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:45
+msgid "Enable Flitt Bank Gateway"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:47
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:83
+msgid "Show in the Payment List as a payment option"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:51
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:95
+#: includes/payment-methods/class-wc-gateway-fondy-localmethods.php:51
+msgid "Title"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:53
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:97
+#: includes/payment-methods/class-wc-gateway-fondy-localmethods.php:53
+msgid "This controls the title which the user sees during checkout"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:54
+msgid "Flitt Online Banking"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:60
+msgid "Payments with online banking."
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:61
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:105
+#: includes/payment-methods/class-wc-gateway-fondy-localmethods.php:60
+msgid "This controls the description which the user sees during checkout"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:65
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:121
+#: includes/payment-methods/class-wc-gateway-fondy-localmethods.php:64
+msgid "Payment integration type"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-bank.php:68
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:124
+#: includes/payment-methods/class-wc-gateway-fondy-localmethods.php:67
+msgid "How the payment form will be displayed"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:24
+msgid "Card payments, Apple/Google Pay"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:81
+msgid "Enable Flitt Gateway"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:87
+msgid "Test mode"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:89
+msgid "Enable Test Mode"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:91
+msgid "Place the payment gateway in test mode using test Merchant ID"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:98
+msgid "Flitt Cards, Apple/Google Pay"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:102
+msgid "Description:"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:104
+msgid "Pay securely by Credit/Debit Card or by Apple/Google Pay with Flitt."
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:109
+msgid "Merchant ID"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:111
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:117
+msgid "Given to Merchant by Flitt"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:115
+msgid "Secret Key"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:128
+msgid "Return Page"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:130
+msgid "Default order page"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:131
+msgid "URL of success page"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:135
+msgid "Payment completed order status"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:139
+msgid "The completed order status after successful payment"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:143
+msgid "Payment expired order status"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:147
+msgid "Order status when payment was expired"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:151
+msgid "Payment declined order status"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:155
+msgid "Order status when payment was declined"
+msgstr ""
+
+#. translators: 1) reverse status
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:188
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:191
+#: includes/payment-methods/class-wc-gateway-fondy-card.php:195
+msgid "Refund Flitt status: %1$s"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-localmethods.php:54
+msgid "Flitt Local Methods"
+msgstr ""
+
+#: includes/payment-methods/class-wc-gateway-fondy-localmethods.php:61
+msgid "Pay with your local bank with Fondy online payments."
+msgstr ""
+
+#. translators: order id
+#: includes/compat/class-wc-fondy-subscriptions-compat.php:136
+msgid "Recurring payment for: %s"
+msgstr ""

@@ -1,0 +1,72 @@
+# Copyright (C) 2020 PmP Fondy Payment
+# This file is distributed under the same license as the PmP Fondy Payment package.
+msgid ""
+msgstr ""
+"Project-Id-Version: PmP Fondy Payment 1.0.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/pmp-fondy-payment\n"
+"POT-Creation-Date: 2020-10-12 15:41:15+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2020-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: classes/class.pmprogateway_fondy.php:84
+msgid "Fondy"
+msgstr "Flitt"
+
+#: classes/class.pmprogateway_fondy.php:137
+msgid "Settings"
+msgstr "Настройки"
+
+#: classes/class.pmprogateway_fondy.php:154
+msgid "View Documentation"
+msgstr "Просмотр документации"
+
+#: classes/class.pmprogateway_fondy.php:154
+msgid "Docs"
+msgstr "Документация"
+
+#: classes/class.pmprogateway_fondy.php:173
+msgid "Flitt Settings"
+msgstr "Настройки Flitt"
+
+#: classes/class.pmprogateway_fondy.php:178
+msgid "Merchant ID"
+msgstr "ID мерчанта"
+
+#: classes/class.pmprogateway_fondy.php:187
+msgid "Payment key"
+msgstr "Ключ платежа"
+
+#: classes/class.pmprogateway_fondy.php:422
+msgid "An unidentified error occurred."
+msgstr "Произошла неопознанная ошибка."
+
+#: classes/class.pmprogateway_fondy.php:434
+msgid "Error message: "
+msgstr "Сообщение об ошибке: "
+
+#: classes/class.pmprogateway_fondy.php:435
+msgid "Error code: "
+msgstr "Код ошибки: "
+#. Plugin Name of the plugin/theme
+msgid "PmP Fondy Payment"
+msgstr "PmP Flitt Payment"
+
+#. Plugin URI of the plugin/theme
+msgid "https://flitt.com"
+msgstr "https://flitt.com"
+
+#. Description of the plugin/theme
+msgid "Flitt Gateway for Paid Memberships Pro"
+msgstr "Fondy Gateway для Paid Memberships Pro"
+
+#. Author of the plugin/theme
+msgid "FONDY - Unified Payment Platform"
+msgstr "FONDY - Unified Payment Platform"
+
+#. Author URI of the plugin/theme
+msgid "https://flitt.com/"
+msgstr "https://fondy.ru/"
