@@ -1,1 +1,0 @@
-document.addEventListener("DOMContentLoaded", () => fondy("#fondy-checkout-container", FondyPaymentArguments));
