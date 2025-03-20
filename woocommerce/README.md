@@ -42,4 +42,4 @@ WooCommerce Flitt Plugin
 ![Скриншот][1]
 ----
 
-[1]: https://raw.githubusercontent.com/cloudipsp/wordpress/master/woocommerce/settings1.png
+[1]: https://raw.githubusercontent.com/flittpayments/wordpress/master/woocommerce/settings1.png
