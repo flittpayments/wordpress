@@ -159,7 +159,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
      */
     public function get_transaction_url($order)
     {
-        $this->view_transaction_url = 'https://portal.flitt.eu/mportal/#/payments/order/%s';
+        $this->view_transaction_url = 'https://portal.flitt.com/mportal/#/payments/order/%s';
         return parent::get_transaction_url($order);
     }
 

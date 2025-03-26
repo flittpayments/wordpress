@@ -15,7 +15,7 @@ Flitt’s [WooCommerce Payment Gateway plugin](https://flitt.com/gb/plugins/wooc
 
 The ability to pay in a convenient way increases customer loyalty, increases the frequency of purchases and helps entrepreneurs earn more. The Flitt platform has already been connected to more than 8000 entrepreneurs around the world — from small start-ups and niche stores to international companies with millions of turnover.
 
-We already work in [33 countries](https://docs.flitt.eu/docs/page/supported-countries/), accept payments from any country, and support more than [100 currencies](https://docs.flitt.eu/docs/page/27/), cooperate with banks of the European Union, UK, Eastern Europe, Ukraine and constantly expand our presence around the world.
+We already work in [33 countries](https://docs.flitt.com/supported-countries/), accept payments from any country, and support more than [100 currencies](https://docs.flitt.com/docs/page/27/), cooperate with banks of the European Union, UK, Eastern Europe, Ukraine and constantly expand our presence around the world.
 
 
 == Reasons to choose Flitt ==
@@ -32,13 +32,13 @@ We already work in [33 countries](https://docs.flitt.eu/docs/page/supported-coun
 == Supported payment methods ==
 
 = Bank cards =
-* Visa, MasterCard, Maestro, American Express, Discover, JCB ([full list](https://docs.flitt.eu/docs/page/payment_methods/))
+* Visa, MasterCard, Maestro, American Express, Discover, JCB ([full list](https://docs.flitt.com/api/order-parameters/))
 
 = Alternative payment methods =
-* Trustpay, Alipay, WeChat Pay, Safetypay, iDEAL, SEPA, Skrill ([full list](https://docs.flitt.eu/docs/page/payment_methods/))
+* Trustpay, Alipay, WeChat Pay, Safetypay, iDEAL, SEPA, Skrill ([full list](https://docs.flitt.com/api/order-parameters/))
 
 = Internet banking =
-* Banks in 26 countries ([full list](https://docs.flitt.eu/docs/page/supported-countries/))
+* Banks in 26 countries ([full list](https://docs.flitt.com/supported-countries/))
 
 
 == Platform features and benefits ==
