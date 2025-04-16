@@ -12,8 +12,8 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     const META_NAME_FLITT_ORDER_ID = '_flitt_order_id';
 
     public $test_mode;
-    public $merchant_id;
-    public $secret_key;
+    public $flitt_merchant_id;
+    public $flitt_secret_key;
     public $integration_type;
     public $completed_order_status;
     public $expired_order_status;
@@ -26,12 +26,12 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     public function __construct()
     {
         if ($this->test_mode) {
-            $this->merchant_id = WC_Flitt_API::TEST_MERCHANT_ID;
-            $this->secret_key = WC_Flitt_API::TEST_MERCHANT_SECRET_KEY;
+            $this->flitt_merchant_id = WC_Flitt_API::TEST_MERCHANT_ID;
+            $this->flitt_secret_key = WC_Flitt_API::TEST_MERCHANT_SECRET_KEY;
         }
 
-        WC_Flitt_API::setMerchantID($this->merchant_id);
-        WC_Flitt_API::setSecretKey($this->secret_key);
+        WC_Flitt_API::setMerchantID($this->flitt_merchant_id);
+        WC_Flitt_API::setSecretKey($this->flitt_secret_key);
 
         // callback handler
         add_action('woocommerce_api_' . strtolower(get_class($this)), [$this, 'callbackHandler']);
@@ -176,7 +176,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         $orderID = $order->get_id();
         $amount = (int)round($order->get_total() * 100);
         $currency = get_woocommerce_currency();
-        $sessionTokenKey = 'session_token_' . md5($this->merchant_id . '_' . $orderID . '_' . $amount . '_' . $currency);
+        $sessionTokenKey = 'session_token_' . md5($this->flitt_merchant_id . '_' . $orderID . '_' . $amount . '_' . $currency);
         $checkoutToken = WC()->session->get($sessionTokenKey);
 
         if (empty($checkoutToken)) {
@@ -196,7 +196,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
      */
     public function clearCache($paymentParams, $orderID)
     {
-        WC()->session->__unset('session_token_' . md5($this->merchant_id . '_' . $orderID . '_' . $paymentParams['amount'] . '_' . $paymentParams['currency']));
+        WC()->session->__unset('session_token_' . md5($this->flitt_merchant_id . '_' . $orderID . '_' . $paymentParams['amount'] . '_' . $paymentParams['currency']));
     }
 
     /**

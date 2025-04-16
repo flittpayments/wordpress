@@ -134,7 +134,7 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
                 $settings = maybe_unserialize(get_option('woocommerce_flitt_settings', []));
 
                 if (isset($settings['salt'])) {
-                    $settings['secret_key'] = $settings['salt'];
+                    $settings['flitt_secret_key'] = $settings['salt'];
                     unset($settings['salt']);
                 }
 
