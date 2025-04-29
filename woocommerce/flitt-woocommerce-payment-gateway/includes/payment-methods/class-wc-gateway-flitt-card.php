@@ -169,6 +169,7 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
     public function process_refund($order_id, $amount = null, $reason = '')
     {
         $order = wc_get_order($order_id);
+        $this->set_params();
 
         if (empty($order))
             return false;

@@ -30,14 +30,13 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
             $this->flitt_secret_key = WC_Flitt_API::TEST_MERCHANT_SECRET_KEY;
         }
 
-        WC_Flitt_API::setMerchantID($this->flitt_merchant_id);
-        WC_Flitt_API::setSecretKey($this->flitt_secret_key);
+        $this->set_params();
 
         // callback handler
         add_action('woocommerce_api_' . strtolower(get_class($this)), [$this, 'callbackHandler']);
 
         // todo mb thankyoupage change order status or clear cart
-//        add_action('woocommerce_before_thankyou', [$this, '']);
+        // add_action('woocommerce_before_thankyou', [$this, '']);
 
         // This action hook saves the settings
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
@@ -55,6 +54,16 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         }
     }
 
+
+    /**
+     * setup merchant id and secret key
+     */
+    public function set_params()
+    {
+        WC_Flitt_API::setMerchantID($this->merchant_id);
+        WC_Flitt_API::setSecretKey($this->secret_key);
+    }
+
     /**
      * Process Payment.
      * Run after submit order button.
@@ -65,6 +74,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     public function process_payment($order_id)
     {
         $order = wc_get_order($order_id);
+        $this->set_params();
         $processResult = ['result' => 'success', 'redirect' => ''];
 
         try {
@@ -173,6 +183,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
      */
     public function getCheckoutToken($order)
     {
+        $this->set_params();
         $orderID = $order->get_id();
         $amount = (int)round($order->get_total() * 100);
         $currency = get_woocommerce_currency();
@@ -388,6 +399,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     public function callbackHandler()
     {
         try {
+            $this->set_params();
             $requestBody = !empty($_POST) ? $_POST : json_decode(file_get_contents('php://input'), true);
             WC_Flitt_API::validateRequest($requestBody);
 
