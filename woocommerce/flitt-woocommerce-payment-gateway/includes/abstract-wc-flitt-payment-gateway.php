@@ -60,8 +60,8 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
      */
     public function set_params()
     {
-        WC_Flitt_API::setMerchantID($this->merchant_id);
-        WC_Flitt_API::setSecretKey($this->secret_key);
+        WC_Flitt_API::setMerchantID($this->flitt_merchant_id);
+        WC_Flitt_API::setSecretKey($this->flitt_secret_key);
     }
 
     /**
