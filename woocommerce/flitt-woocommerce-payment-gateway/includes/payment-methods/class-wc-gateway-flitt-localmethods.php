@@ -25,8 +25,8 @@ class WC_Gateway_Flitt_LocalMethods extends WC_Flitt_Payment_Gateway
         $this->description = $this->get_option('description');
         $this->enabled = $this->get_option('enabled');
         $this->integration_type = $this->get_option('integration_type') ? $this->get_option('integration_type') : false;
-        $this->merchant_id = !empty($main_settings['merchant_id']) ? $main_settings['merchant_id'] : '';
-        $this->secret_key = !empty($main_settings['secret_key']) ? $main_settings['secret_key'] : '';
+        $this->flitt_merchant_id = !empty($main_settings['flitt_merchant_id']) ? $main_settings['flitt_merchant_id'] : '';
+        $this->flitt_secret_key = !empty($main_settings['flitt_secret_key']) ? $main_settings['flitt_secret_key'] : '';
         $this->test_mode = !empty($main_settings['test_mode']) && 'yes' === $main_settings['test_mode'];
         $this->redirect_page_id = !empty($main_settings['redirect_page_id']) ? $main_settings['redirect_page_id'] : false;
         $this->completed_order_status = !empty($main_settings['completed_order_status']) ? $main_settings['completed_order_status'] : false;

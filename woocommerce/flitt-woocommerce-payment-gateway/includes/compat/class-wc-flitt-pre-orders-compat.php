@@ -30,6 +30,7 @@ class WC_Flitt_Pre_Orders_Compat
     public function process_pre_order_payments($order)
     {
         try {
+            $this->paymentGateway->set_params();
             $capture = WC_Flitt_API::capture([
                 'order_id' => $order->get_meta(WC_Flitt_Payment_Gateway::META_NAME_FLITT_ORDER_ID),
                 'currency' => esc_attr(get_woocommerce_currency()),

@@ -4,7 +4,7 @@ Tags: payments, payment gateway, woocommerce, online payment, merchant, credit c
 Requires at least: 3.5
 Tested up to: 6.0.1
 Requires PHP: 5.6
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,7 +129,7 @@ Done, now you can accept payments from the customers!
 
 
 == Changelog ==
-= 1.0.0 = 
+= 1.0.0 =
 * First release
 = 1.0.1 =
 add default success page
@@ -209,9 +209,9 @@ some fix, duplicate update
 Added v2 js Api
 = 2.4.1 =
 Added js Mask CCard
-= 2.4.2 =	
-some fix php tags	
-= 2.4.3 =	
+= 2.4.2 =
+some fix php tags
+= 2.4.3 =
 Added Refund function
 = 2.4.4 =
 Fixed checkout card

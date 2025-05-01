@@ -44,8 +44,8 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
         $this->description = $this->get_option('description');
         $this->enabled = $this->get_option('enabled');
         $this->test_mode = 'yes' === $this->get_option('test_mode');
-        $this->merchant_id = (int)$this->get_option('merchant_id');
-        $this->secret_key = $this->get_option('secret_key');
+        $this->flitt_merchant_id = (int)$this->get_option('flitt_merchant_id');
+        $this->flitt_secret_key = $this->get_option('flitt_secret_key');
         $this->integration_type = $this->get_option('integration_type') ? $this->get_option('integration_type') : false;
         $this->redirect_page_id = $this->get_option('redirect_page_id');
         $this->completed_order_status = $this->get_option('completed_order_status') ? $this->get_option('completed_order_status') : false;
@@ -105,13 +105,13 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
                 'description' => __('This controls the description which the user sees during checkout', 'flitt-woocommerce-payment-gateway'),
                 'desc_tip' => true
             ],
-            'merchant_id' => [
+            'flitt_merchant_id' => [
                 'title' => __('Merchant ID', 'flitt-woocommerce-payment-gateway'),
                 'type' => 'text',
                 'description' => __('Given to Merchant by Flitt', 'flitt-woocommerce-payment-gateway'),
                 'desc_tip' => true
             ],
-            'secret_key' => [
+            'flitt_secret_key' => [
                 'title' => __('Secret Key', 'flitt-woocommerce-payment-gateway'),
                 'type' => 'text',
                 'description' => __('Given to Merchant by Flitt', 'flitt-woocommerce-payment-gateway'),
@@ -169,6 +169,7 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
     public function process_refund($order_id, $amount = null, $reason = '')
     {
         $order = wc_get_order($order_id);
+        $this->set_params();
 
         if (empty($order))
             return false;
