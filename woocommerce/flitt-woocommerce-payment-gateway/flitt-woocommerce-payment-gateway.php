@@ -5,7 +5,7 @@
  * Description: Flitt Payment Gateway for WooCommerce.
  * Author: Flitt
  * Author URI: https://flitt.com
- * Version: 3.0.3
+ * Version: 3.0.4
  * Text Domain: flitt-woocommerce-payment-gateway
  * Domain Path: /languages
  * Tested up to: 5.8
@@ -54,6 +54,21 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
             }
         }
 
+        function declare_flitt_hpos_compatibility() {
+            if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+                \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+                    'custom_order_tables',
+                    __FILE__,
+                    true
+                );
+                \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+                    'orders_cache',
+                    __FILE__,
+                    true
+                    );
+            }
+        }
+
         function flitt_register_order_approval_payment_method_type() {
             if ( ! class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
                 return;
@@ -94,6 +109,7 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
 
             $this->updateSettings();
             add_action('before_woocommerce_init',  [$this, 'declare_cart_checkout_blocks_compatibility']);
+            add_action('before_woocommerce_init',  [$this, 'declare_flitt_hpos_compatibility']);
             add_action( 'woocommerce_blocks_loaded',  [$this, 'flitt_register_order_approval_payment_method_type']);
         }
 
