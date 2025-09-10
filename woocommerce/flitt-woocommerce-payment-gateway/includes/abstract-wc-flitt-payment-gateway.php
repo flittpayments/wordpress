@@ -106,7 +106,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     {
         $params = [
             'order_id' => $this->createFlittOrderID($order),
-            'order_desc' => __('Order №: ', 'flitt-woocommerce-payment-gateway') . $order->get_id(),
+            'order_desc' => __('Order: ', 'flitt-woocommerce-payment-gateway') . $order->get_id(),
             'amount' => (int)round($order->get_total() * 100),
             'currency' => get_woocommerce_currency(),
             'lang' => $this->getLanguage(),
