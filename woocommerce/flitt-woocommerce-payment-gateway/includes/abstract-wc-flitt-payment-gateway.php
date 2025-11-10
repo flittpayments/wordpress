@@ -60,6 +60,21 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
      */
     public function set_params()
     {
+        if ( empty($this->id) ) {
+            $this->id = 'flitt';
+        }
+        if ( empty($this->form_fields) ) {
+            $this->init_form_fields();
+        }
+        if ( ! is_array( $this->settings ) || empty( $this->settings ) ) {
+            $this->init_settings();
+        }
+        if ( !$this->flitt_merchant_id ) {
+            $this->flitt_merchant_id = (int)$this->get_option('flitt_merchant_id');
+        }
+        if ( !$this->flitt_secret_key ) {
+            $this->flitt_secret_key = $this->get_option('flitt_secret_key');
+        }
         WC_Flitt_API::setMerchantID($this->flitt_merchant_id);
         WC_Flitt_API::setSecretKey($this->flitt_secret_key);
     }
