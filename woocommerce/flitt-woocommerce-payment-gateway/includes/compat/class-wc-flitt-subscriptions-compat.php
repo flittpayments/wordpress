@@ -126,7 +126,7 @@ class WC_Flitt_Subscriptions_Compat
                 throw new Exception("Token expired, or token not found.");
 
 //            $renewal_order->add_order_note('Order amount is: ' . $amount_to_charge);
-            $subscriptionPayment = WC_Flitt_API::recurring([
+            $subscriptionPayment = $this->paymentGateway->recurring([
                 'order_id' => $this->paymentGateway->createFlittOrderID($renewal_order),
                 'amount' => $amount,
                 'rectoken' => $token[0]['token'],

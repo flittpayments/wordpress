@@ -5,7 +5,7 @@
  * Description: Flitt Payment Gateway for WooCommerce.
  * Author: Flitt
  * Author URI: https://flitt.com
- * Version: 3.0.4
+ * Version: 3.0.5
  * Text Domain: flitt-woocommerce-payment-gateway
  * Domain Path: /languages
  * Tested up to: 5.8
@@ -31,7 +31,6 @@ define('WC_FLITT_MIN_WC_VER', '3.0');
 
 add_action('plugins_loaded', 'woocommerce_gateway_flitt');
 
-require_once dirname(__FILE__) . '/includes/class-wc-flitt-api.php';
 if ( ! class_exists( 'WC_Flitt' ) ) {
     class WC_Flitt
     {
@@ -86,16 +85,12 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
             if (!$this->isAcceptableEnv())
                 return;
 
-            require_once dirname(__FILE__) . '/includes/class-wc-flitt-api.php';
-
             require_once dirname(__FILE__) . '/includes/integration-types/Flitt_Embedded.php';
             require_once dirname(__FILE__) . '/includes/integration-types/Flitt_Hosted.php';
             require_once dirname(__FILE__) . '/includes/integration-types/Flitt_Seamless.php';
 
             require_once dirname(__FILE__) . '/includes/abstract-wc-flitt-payment-gateway.php';
             require_once dirname(__FILE__) . '/includes/payment-methods/class-wc-gateway-flitt-card.php';
-            require_once dirname(__FILE__) . '/includes/payment-methods/class-wc-gateway-flitt-bank.php';
-            require_once dirname(__FILE__) . '/includes/payment-methods/class-wc-gateway-flitt-localmethods.php';
 
             require_once dirname(__FILE__) . '/includes/compat/class-wc-flitt-pre-orders-compat.php';
             require_once dirname(__FILE__) . '/includes/compat/class-wc-flitt-subscriptions-compat.php';
@@ -111,6 +106,7 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
             add_action('before_woocommerce_init',  [$this, 'declare_cart_checkout_blocks_compatibility']);
             add_action('before_woocommerce_init',  [$this, 'declare_flitt_hpos_compatibility']);
             add_action( 'woocommerce_blocks_loaded',  [$this, 'flitt_register_order_approval_payment_method_type']);
+
         }
 
         public function add_gateways($gateways)
@@ -230,4 +226,3 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
 function woocommerce_gateway_flitt() {
     return WC_Flitt::getInstance();
 }
-

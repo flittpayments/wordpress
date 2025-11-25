@@ -31,7 +31,7 @@ class WC_Flitt_Pre_Orders_Compat
     {
         try {
             $this->paymentGateway->set_params();
-            $capture = WC_Flitt_API::capture([
+            $capture = $this->paymentGateway->capture([
                 'order_id' => $order->get_meta(WC_Flitt_Payment_Gateway::META_NAME_FLITT_ORDER_ID),
                 'currency' => esc_attr(get_woocommerce_currency()),
                 'amount' => (int)round($order->get_total() * 100),
@@ -63,4 +63,3 @@ class WC_Flitt_Pre_Orders_Compat
         echo '<div class="notice notice-info is-dismissible"><p>' . $message . '</p></div>';
     }
 }
-

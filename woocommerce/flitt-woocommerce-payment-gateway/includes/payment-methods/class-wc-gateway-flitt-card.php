@@ -52,8 +52,6 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
         $this->expired_order_status = $this->get_option('expired_order_status') ? $this->get_option('expired_order_status') : false;
         $this->declined_order_status = $this->get_option('declined_order_status') ? $this->get_option('declined_order_status') : false;
 
-        parent::__construct();
-
         if (class_exists('WC_Pre_Orders_Order')) {
             $this->pre_orders = new WC_Flitt_Pre_Orders_Compat($this);
         }
@@ -61,6 +59,8 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
         if (class_exists('WC_Subscriptions_Order')) {
             $this->subscriptions = new WC_Flitt_Subscriptions_Compat($this);
         }
+
+        parent::__construct();
     }
 
     /**
@@ -175,7 +175,7 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
             return false;
 
         try {
-            $reverse = WC_Flitt_API::reverse([
+            $reverse = $this->reverse([
                 'order_id' => $this->getFlittOrderID($order),
                 'amount' => (int)round($amount * 100),
                 'currency' => $order->get_currency(),
