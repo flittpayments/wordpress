@@ -102,7 +102,6 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
             // add plugin setting button
             add_filter('plugin_action_links_' . plugin_basename(__FILE__), [$this, 'plugin_action_links']);
 
-            $this->updateSettings();
             add_action('before_woocommerce_init',  [$this, 'declare_cart_checkout_blocks_compatibility']);
             add_action('before_woocommerce_init',  [$this, 'declare_flitt_hpos_compatibility']);
             add_action( 'woocommerce_blocks_loaded',  [$this, 'flitt_register_order_approval_payment_method_type']);
@@ -112,8 +111,6 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
         public function add_gateways($gateways)
         {
             $gateways[] = 'WC_Gateway_Flitt_Card';
-            // $gateways[] = 'WC_Gateway_Flitt_Bank';
-            // $gateways[] = 'WC_Gateway_Flitt_LocalMethods';
             return $gateways;
         }
 
@@ -134,48 +131,6 @@ if ( ! class_exists( 'WC_Flitt' ) ) {
             ];
 
             return array_merge($plugin_links, $links);
-        }
-
-        /**
-         * migrate old settings
-         */
-        public function updateSettings()
-        {
-            if (version_compare(get_option('flitt_woocommerce_version'), WC_FLITT_VERSION, '<')) {
-                update_option('flitt_woocommerce_version', WC_FLITT_VERSION);
-                $settings = maybe_unserialize(get_option('woocommerce_flitt_settings', []));
-
-                if (isset($settings['salt'])) {
-                    $settings['flitt_secret_key'] = $settings['salt'];
-                    unset($settings['salt']);
-                }
-
-                if (isset($settings['default_order_status'])){
-                    $settings['completed_order_status'] = $settings['default_order_status'];
-                    unset($settings['default_order_status']);
-                }
-
-                if (isset($settings['payment_type'])) {
-                    switch ($settings['payment_type']) {
-                        case 'page_mode':
-                            $settings['integration_type'] = 'embedded';
-                            break;
-                        case 'on_checkout_page':
-                            $settings['integration_type'] = 'seamless';
-                            break;
-                        default:
-                            $settings['integration_type'] = 'hosted';
-                    }
-                    unset($settings['payment_type']);
-                }
-
-                unset($settings['calendar']);
-                unset($settings['page_mode_instant']);
-                unset($settings['on_checkout_page']);
-                unset($settings['force_lang']);
-
-                update_option('woocommerce_flitt_settings', $settings);
-            }
         }
 
         /**
