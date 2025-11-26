@@ -44,6 +44,7 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
         $this->description = $this->get_option('description');
         $this->enabled = $this->get_option('enabled');
         $this->test_mode = 'yes' === $this->get_option('test_mode');
+        $this->debug_mode = 'yes' === $this->get_option('logging');
         $this->flitt_merchant_id = (int)$this->get_option('flitt_merchant_id');
         $this->flitt_secret_key = $this->get_option('flitt_secret_key');
         $this->integration_type = $this->get_option('integration_type') ? $this->get_option('integration_type') : false;
@@ -89,6 +90,14 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
                 'label' => __('Enable Test Mode', 'flitt-woocommerce-payment-gateway'),
                 'default' => 'no',
                 'description' => __('Place the payment gateway in test mode using test Merchant ID', 'flitt-woocommerce-payment-gateway'),
+                'desc_tip' => true
+            ],
+            'logging' => [
+                'title' => __('Debug Mode', 'flitt-woocommerce-payment-gateway'),
+                'type' => 'checkbox',
+                'label' => __('Enable Debug Mode', 'flitt-woocommerce-payment-gateway'),
+                'default' => 'no',
+                'description' => __('Inject detailed debug metadata into all requests (with this behavior disabled in production).', 'flitt-woocommerce-payment-gateway'),
                 'desc_tip' => true
             ],
             'title' => [

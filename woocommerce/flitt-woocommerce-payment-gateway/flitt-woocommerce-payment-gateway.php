@@ -5,7 +5,7 @@
  * Description: Flitt Payment Gateway for WooCommerce.
  * Author: Flitt
  * Author URI: https://flitt.com
- * Version: 4.0.0
+ * Version: 4.0.1
  * Text Domain: flitt-woocommerce-payment-gateway
  * Domain Path: /languages
  * Tested up to: 5.8
@@ -25,7 +25,7 @@ if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
 
 define("WC_FLITT_DIR", dirname(__FILE__));
 define("WC_FLITT_BASE_FILE", __FILE__);
-define('WC_FLITT_VERSION', '4.0.0');
+define('WC_FLITT_VERSION', '4.0.1');
 define('WC_FLITT_MIN_PHP_VER', '5.6.0');
 define('WC_FLITT_MIN_WC_VER', '3.0');
 

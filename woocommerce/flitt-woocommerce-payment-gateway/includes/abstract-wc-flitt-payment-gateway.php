@@ -21,6 +21,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     protected $api_url = self::API_URL;
 
     public $test_mode;
+    public $debug_mode;
     public $flitt_merchant_id;
     public $flitt_secret_key;
     public $integration_type;
@@ -84,6 +85,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         if ( !$this->flitt_secret_key ) {
             $this->flitt_secret_key = $this->get_option('flitt_secret_key');
         }
+        $this->debug_mode = 'yes' === $this->get_option('logging');
     }
 
     /**
@@ -141,9 +143,23 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         if (empty($this->flitt_merchant_id) || empty($this->flitt_secret_key)) {
             throw new Exception(__('Flitt merchant credentials are missing.', 'flitt-woocommerce-payment-gateway'));
         }
-
         $requestData['merchant_id'] = $this->flitt_merchant_id;
+
+        $debug_data = null;
+        if ($this->debug_mode) {
+            try{
+                $debug_data = $this->getDebugData($requestData);
+            } catch (Exception $e) {
+                $debug_data = $e->getMessage();
+            }
+        }
+
         $requestData['signature'] = $this->getSignature($requestData, $this->flitt_secret_key);
+
+        if ($debug_data) {
+            $requestData['debug_data'] = $debug_data;
+        }
+
         $response = wp_safe_remote_post(
             $this->api_url . $endpoint,
             [
@@ -170,6 +186,58 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
 
         return $result->response;
     }
+    /**
+     * Generate Debug Data
+     */
+    protected function getDebugData($requestData)
+    {
+        $signatureString = '';
+        if (!empty($this->flitt_secret_key)) {
+            $signatureString = $this->getSignature($requestData, $this->flitt_secret_key, false);
+        }
+
+        $maskedSecretKey = $this->maskSecretKey($this->flitt_secret_key);
+        $maskedSignature = $signatureString;
+
+        if (!empty($maskedSecretKey)) {
+            $maskedSignature = str_replace($this->flitt_secret_key, $maskedSecretKey, $signatureString);
+        }
+        // Php extensions
+        $extensions = get_loaded_extensions();
+        sort($extensions);
+        // Plugin extensions
+        $options = $this->settings;
+        unset(
+            $options['flitt_secret_key']
+        );
+        if (isset($options['secret_key'])) {
+            unset($options['secret_key']);
+        }
+        // All wp plugins
+        try {
+            $all_plugins = get_plugins();
+            $plugins_array = [];
+            foreach ( $all_plugins as $plugin_file => $plugin_data ) {
+                $plugins_array[] = [
+                    'name'    => $plugin_data['Name'],
+                    'version' => $plugin_data['Version'],
+                ];
+            }
+        } catch (Exception $e) {
+            $plugins_array = $e->getMessage();
+        }
+
+        $debugData = [
+            'php_version' => PHP_VERSION,
+            'php_sapi' => PHP_SAPI,
+            'php_extensions' => $extensions,
+            'signature_string' => $maskedSignature,
+            'plugin_options' => $options,
+            'wordpress_plugins' => $plugins_array
+        ];
+
+        return $debugData;
+    }
 
     /**
      * @param $data
@@ -190,6 +258,31 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         }
 
         return $encoded ? sha1($str) : $str;
+    }
+
+    /**
+     * Mask secret key while keeping first and last characters visible.
+     *
+     * @param string $secretKey
+     * @return string
+     */
+    protected function maskSecretKey($secretKey)
+    {
+        if (empty($secretKey)) {
+            return '';
+        }
+
+        $length = strlen($secretKey);
+
+        if ($length <= 2) {
+            return str_repeat('*', $length);
+        }
+
+        if ($length <= 6) {
+            return substr($secretKey, 0, 1) . str_repeat('*', $length - 2) . substr($secretKey, -1);
+        }
+
+        return substr($secretKey, 0, 3) . str_repeat('*', $length - 6) . substr($secretKey, -3);
     }
 
     /**
@@ -415,6 +508,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
             'path' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
             'products' => $this->getReservationDataProducts($order->get_items())
         ];
+
 
         return base64_encode(json_encode($reservationData));
     }
