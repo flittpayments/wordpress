@@ -44,6 +44,7 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
         $this->description = $this->get_option('description');
         $this->enabled = $this->get_option('enabled');
         $this->test_mode = 'yes' === $this->get_option('test_mode');
+        $this->debug_mode = 'yes' === $this->get_option('logging');
         $this->flitt_merchant_id = (int)$this->get_option('flitt_merchant_id');
         $this->flitt_secret_key = $this->get_option('flitt_secret_key');
         $this->integration_type = $this->get_option('integration_type') ? $this->get_option('integration_type') : false;
@@ -52,8 +53,6 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
         $this->expired_order_status = $this->get_option('expired_order_status') ? $this->get_option('expired_order_status') : false;
         $this->declined_order_status = $this->get_option('declined_order_status') ? $this->get_option('declined_order_status') : false;
 
-        parent::__construct();
-
         if (class_exists('WC_Pre_Orders_Order')) {
             $this->pre_orders = new WC_Flitt_Pre_Orders_Compat($this);
         }
@@ -61,6 +60,8 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
         if (class_exists('WC_Subscriptions_Order')) {
             $this->subscriptions = new WC_Flitt_Subscriptions_Compat($this);
         }
+
+        parent::__construct();
     }
 
     /**
@@ -89,6 +90,14 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
                 'label' => __('Enable Test Mode', 'flitt-woocommerce-payment-gateway'),
                 'default' => 'no',
                 'description' => __('Place the payment gateway in test mode using test Merchant ID', 'flitt-woocommerce-payment-gateway'),
+                'desc_tip' => true
+            ],
+            'logging' => [
+                'title' => __('Debug Mode', 'flitt-woocommerce-payment-gateway'),
+                'type' => 'checkbox',
+                'label' => __('Enable Debug Mode', 'flitt-woocommerce-payment-gateway'),
+                'default' => 'no',
+                'description' => __('Inject detailed debug metadata into all requests (with this behavior disabled in production).', 'flitt-woocommerce-payment-gateway'),
                 'desc_tip' => true
             ],
             'title' => [
@@ -175,7 +184,7 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
             return false;
 
         try {
-            $reverse = WC_Flitt_API::reverse([
+            $reverse = $this->reverse([
                 'order_id' => $this->getFlittOrderID($order),
                 'amount' => (int)round($amount * 100),
                 'currency' => $order->get_currency(),

@@ -2,6 +2,10 @@
 
 class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
 {
+    const API_URL = 'https://pay.flitt.com/api/';
+    const TEST_MERCHANT_ID = 1549901;
+    const TEST_MERCHANT_SECRET_KEY = 'test';
+
     const ORDER_APPROVED = 'approved';
     const ORDER_DECLINED = 'declined';
     const ORDER_EXPIRED = 'expired';
@@ -11,7 +15,13 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     const ORDER_SEPARATOR = "_";
     const META_NAME_FLITT_ORDER_ID = '_flitt_order_id';
 
+    /**
+     * @var string
+     */
+    protected $api_url = self::API_URL;
+
     public $test_mode;
+    public $debug_mode;
     public $flitt_merchant_id;
     public $flitt_secret_key;
     public $integration_type;
@@ -26,8 +36,8 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     public function __construct()
     {
         if ($this->test_mode) {
-            $this->flitt_merchant_id = WC_Flitt_API::TEST_MERCHANT_ID;
-            $this->flitt_secret_key = WC_Flitt_API::TEST_MERCHANT_SECRET_KEY;
+            $this->flitt_merchant_id = self::TEST_MERCHANT_ID;
+            $this->flitt_secret_key = self::TEST_MERCHANT_SECRET_KEY;
         }
 
         $this->set_params();
@@ -60,8 +70,219 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
      */
     public function set_params()
     {
-        WC_Flitt_API::setMerchantID($this->flitt_merchant_id);
-        WC_Flitt_API::setSecretKey($this->flitt_secret_key);
+        if ( empty($this->id) ) {
+            $this->id = 'flitt';
+        }
+        if ( empty($this->form_fields) ) {
+            $this->init_form_fields();
+        }
+        if ( ! is_array( $this->settings ) || empty( $this->settings ) ) {
+            $this->init_settings();
+        }
+        if ( !$this->flitt_merchant_id ) {
+            $this->flitt_merchant_id = (int)$this->get_option('flitt_merchant_id');
+        }
+        if ( !$this->flitt_secret_key ) {
+            $this->flitt_secret_key = $this->get_option('flitt_secret_key');
+        }
+        $this->debug_mode = 'yes' === $this->get_option('logging');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getCheckoutUrl($requestData)
+    {
+        $response = $this->sendToAPI('checkout/url', $requestData);
+
+        return $response->checkout_url;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function requestCheckoutToken($requestData)
+    {
+        $response = $this->sendToAPI('checkout/token', $requestData);
+
+        return $response->token;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function reverse($requestData)
+    {
+        return $this->sendToAPI('reverse/order_id', $requestData);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function capture($requestData)
+    {
+        return $this->sendToAPI('capture/order_id', $requestData);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function recurring($requestData)
+    {
+        return $this->sendToAPI('recurring', $requestData);
+    }
+
+    /**
+     * @param $endpoint
+     * @param $requestData
+     * @return mixed
+     * @throws Exception
+     */
+    protected function sendToAPI($endpoint, $requestData)
+    {
+        if (empty($this->flitt_merchant_id) || empty($this->flitt_secret_key)) {
+            throw new Exception(__('Flitt merchant credentials are missing.', 'flitt-woocommerce-payment-gateway'));
+        }
+        $requestData['merchant_id'] = $this->flitt_merchant_id;
+
+        $debug_data = null;
+        if ($this->debug_mode) {
+            try{
+                $debug_data = $this->getDebugData($requestData);
+            } catch (Exception $e) {
+                $debug_data = $e->getMessage();
+            }
+        }
+
+        $requestData['signature'] = $this->getSignature($requestData, $this->flitt_secret_key);
+
+        if ($debug_data) {
+            $requestData['debug_data'] = $debug_data;
+        }
+
+        $response = wp_safe_remote_post(
+            $this->api_url . $endpoint,
+            [
+                'headers' => ["Content-type" => "application/json;charset=UTF-8"],
+                'body' => json_encode(['request' => $requestData]),
+                'timeout' => 70,
+            ]
+        );
+
+        if (is_wp_error($response))
+            throw new Exception($response->get_error_message());
+
+        $response_code = wp_remote_retrieve_response_code($response);
+        if ($response_code != 200)
+            throw new Exception("Flitt API Return code is $response_code. Please try again later.");
+
+        $result = json_decode($response['body']);
+
+        if (empty($result->response) && empty($result->response->response_status))
+            throw new Exception('Unknown Flitt API answer.');
+
+        if ($result->response->response_status != 'success')
+            throw new Exception($result->response->error_message);
+
+        return $result->response;
+    }
+    /**
+     * Generate Debug Data
+     */
+    protected function getDebugData($requestData)
+    {
+        $signatureString = '';
+        if (!empty($this->flitt_secret_key)) {
+            $signatureString = $this->getSignature($requestData, $this->flitt_secret_key, false);
+        }
+
+        $maskedSecretKey = $this->maskSecretKey($this->flitt_secret_key);
+        $maskedSignature = $signatureString;
+
+        if (!empty($maskedSecretKey)) {
+            $maskedSignature = str_replace($this->flitt_secret_key, $maskedSecretKey, $signatureString);
+        }
+        // Php extensions
+        $extensions = get_loaded_extensions();
+        sort($extensions);
+        // Plugin extensions
+        $options = $this->settings;
+        unset(
+            $options['flitt_secret_key']
+        );
+        if (isset($options['secret_key'])) {
+            unset($options['secret_key']);
+        }
+        // All wp plugins
+        try {
+            $all_plugins = get_plugins();
+            $plugins_array = [];
+            foreach ( $all_plugins as $plugin_file => $plugin_data ) {
+                $plugins_array[] = [
+                    'name'    => $plugin_data['Name'],
+                    'version' => $plugin_data['Version'],
+                ];
+            }
+        } catch (Exception $e) {
+            $plugins_array = $e->getMessage();
+        }
+
+        $debugData = [
+            'php_version' => PHP_VERSION,
+            'php_sapi' => PHP_SAPI,
+            'php_extensions' => $extensions,
+            'signature_string' => $maskedSignature,
+            'plugin_options' => $options,
+            'wordpress_plugins' => $plugins_array
+        ];
+
+        return $debugData;
+    }
+
+    /**
+     * @param $data
+     * @param $password
+     * @param bool $encoded
+     * @return mixed|string
+     */
+    protected function getSignature($data, $password, $encoded = true)
+    {
+        $data = array_filter($data, function ($var) {
+            return $var !== '' && $var !== null;
+        });
+        ksort($data);
+
+        $str = $password;
+        foreach ($data as $k => $v) {
+            $str .= '|' . $v;
+        }
+
+        return $encoded ? sha1($str) : $str;
+    }
+
+    /**
+     * Mask secret key while keeping first and last characters visible.
+     *
+     * @param string $secretKey
+     * @return string
+     */
+    protected function maskSecretKey($secretKey)
+    {
+        if (empty($secretKey)) {
+            return '';
+        }
+
+        $length = strlen($secretKey);
+
+        if ($length <= 2) {
+            return str_repeat('*', $length);
+        }
+
+        if ($length <= 6) {
+            return substr($secretKey, 0, 1) . str_repeat('*', $length - 2) . substr($secretKey, -1);
+        }
+
+        return substr($secretKey, 0, 3) . str_repeat('*', $length - 6) . substr($secretKey, -3);
     }
 
     /**
@@ -84,7 +305,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
                 $processResult['token'] = $this->getCheckoutToken($order);
             } else {
                 $paymentParams = $this->getPaymentParams($order);
-                $processResult['redirect'] = WC_Flitt_API::getCheckoutUrl($paymentParams);
+                $processResult['redirect'] = $this->getCheckoutUrl($paymentParams);
             }
         } catch (Exception $e) {
             wc_add_notice($e->getMessage(), 'error');
@@ -106,7 +327,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     {
         $params = [
             'order_id' => $this->createFlittOrderID($order),
-            'order_desc' => __('Order: ', 'flitt-woocommerce-payment-gateway') . $order->get_id(),
+            'order_desc' => 'Order: ' . $order->get_id(),
             'amount' => (int)round($order->get_total() * 100),
             'currency' => get_woocommerce_currency(),
             'lang' => $this->getLanguage(),
@@ -192,7 +413,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
 
         if (empty($checkoutToken)) {
             $paymentParams = $this->getPaymentParams($order);
-            $checkoutToken = WC_Flitt_API::getCheckoutToken($paymentParams);
+            $checkoutToken = $this->requestCheckoutToken($paymentParams);
             WC()->session->set($sessionTokenKey, $checkoutToken);
         }
 
@@ -288,6 +509,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
             'products' => $this->getReservationDataProducts($order->get_items())
         ];
 
+
         return base64_encode(json_encode($reservationData));
     }
 
@@ -336,7 +558,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         }
 
         if (isset($this->seamless)) {
-            $integration_types['seamless'] = __('Seamless', 'flitt-woocommerce-payment-gateway');
+            $integration_types['seamless'] = __('Seamless (support only old checkout)', 'flitt-woocommerce-payment-gateway');
         }
 
         return $integration_types;
@@ -392,6 +614,30 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     }
 
     /**
+     * Callback validation process
+     *
+     * @param $requestBody
+     * @throws Exception
+     */
+    public function validateRequest($requestBody)
+    {
+        if (empty($requestBody)){
+            throw new Exception('Empty request body.');
+        }
+
+        if ($this->flitt_merchant_id != $requestBody['merchant_id']){
+            throw new Exception ('Merchant data is incorrect.');
+        }
+
+        $requestSignature = $requestBody['signature'];
+        unset($requestBody['response_signature_string']);
+        unset($requestBody['signature']);
+        if ($requestSignature !== $this->getSignature($requestBody, $this->flitt_secret_key)) {
+            throw new Exception ('Signature is not valid');
+        }
+    }
+
+    /**
      * Flitt callback handler
      *
      * @since 3.0.0
@@ -401,11 +647,12 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         try {
             $this->set_params();
             $requestBody = !empty($_POST) ? $_POST : json_decode(file_get_contents('php://input'), true);
-            WC_Flitt_API::validateRequest($requestBody);
+            $this->validateRequest($requestBody);
 
-            if (!empty($requestBody['reversal_amount']) || $requestBody['tran_type'] === 'reverse') // todo MB add refund complete note
+            if (!empty($requestBody['reversal_amount']) || $requestBody['tran_type'] === 'reverse'){
+                // todo MB add refund complete note
                 exit; // just ignore reverse callback
-
+            }
             // order switch status process
             $orderID = strstr($requestBody['order_id'], self::ORDER_SEPARATOR, true);
             $order = wc_get_order($orderID);
@@ -467,4 +714,3 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         }
     }
 }
-
