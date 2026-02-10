@@ -1,6 +1,10 @@
 <?php
 
-class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
 {
     const API_URL = 'https://pay.flitt.com/api/';
     const TEST_MERCHANT_ID = 1549901;
@@ -31,7 +35,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     public $redirect_page_id;
 
     /**
-     * WC_Flitt_Payment_Gateway constructor.
+     * Flitt_WC_Payment_Gateway constructor.
      */
     public function __construct()
     {
@@ -59,8 +63,8 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         if ($this->integration_type === 'seamless') {
             add_action('wp_enqueue_scripts', [$this, 'includeSeamlessAssets']);
             add_filter('woocommerce_order_button_html', [$this, 'custom_order_button_html']);
-            add_action('wp_ajax_nopriv_generate_ajax_order_flitt_info', [$this, 'generate_ajax_order_flitt_info'], 99);
-            add_action('wp_ajax_generate_ajax_order_flitt_info', [$this, 'generate_ajax_order_flitt_info'], 99);
+            add_action('wp_ajax_nopriv_flitt_generate_ajax_order_info', [$this, 'flitt_generate_ajax_order_info'], 99);
+            add_action('wp_ajax_flitt_generate_ajax_order_info', [$this, 'flitt_generate_ajax_order_info'], 99);
         }
     }
 
@@ -141,7 +145,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     protected function sendToAPI($endpoint, $requestData)
     {
         if (empty($this->flitt_merchant_id) || empty($this->flitt_secret_key)) {
-            throw new Exception(__('Flitt merchant credentials are missing.', 'flitt-woocommerce-payment-gateway'));
+            throw new Exception(esc_html__('Flitt merchant credentials are missing.', 'flitt-payment-gateway-for-woocommerce'));
         }
         $requestData['merchant_id'] = $this->flitt_merchant_id;
 
@@ -170,11 +174,11 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         );
 
         if (is_wp_error($response))
-            throw new Exception($response->get_error_message());
+            throw new Exception(esc_html($response->get_error_message()));
 
         $response_code = wp_remote_retrieve_response_code($response);
         if ($response_code != 200)
-            throw new Exception("Flitt API Return code is $response_code. Please try again later.");
+            throw new Exception(esc_html("Flitt API Return code is $response_code. Please try again later."));
 
         $result = json_decode($response['body']);
 
@@ -182,7 +186,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
             throw new Exception('Unknown Flitt API answer.');
 
         if ($result->response->response_status != 'success')
-            throw new Exception($result->response->error_message);
+            throw new Exception(esc_html($result->response->error_message));
 
         return $result->response;
     }
@@ -313,7 +317,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         }
 
         // in prev version we are use session to save redirect_url
-        return apply_filters('wc_gateway_flitt_process_payment_complete', $processResult, $order);
+        return apply_filters('flitt_wc_gateway_process_payment_complete', $processResult, $order);
     }
 
     /**
@@ -337,7 +341,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
             'reservation_data' => $this->getReservationData($order),
         ];
 
-        return apply_filters('wc_gateway_flitt_payment_params', $params, $order);
+        return apply_filters('flitt_wc_gateway_flitt_payment_params', $params, $order);
     }
 
     /**
@@ -492,6 +496,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     {
         $orderData = $order->get_data();
         $orderDataBilling = $orderData['billing'];
+        $referer = wp_get_referer();
 
         $reservationData = [
             'customer_zip' => $orderDataBilling['postcode'],
@@ -503,9 +508,9 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
             'account' => $orderDataBilling['email'],
             'cms_name' => 'Wordpress',
             'cms_version' => get_bloginfo('version'),
-            'cms_plugin_version' => WC_FLITT_VERSION . ' (Woocommerce ' . WC_VERSION . ')',
+            'cms_plugin_version' => FLITT_WC_VERSION . ' (Woocommerce ' . WC_VERSION . ')',
             'shop_domain' => get_site_url(),
-            'path' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '',
+            'path' => $referer,
             'products' => $this->getReservationDataProducts($order->get_items())
         ];
 
@@ -550,15 +555,15 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         $integration_types = [];
 
         if (isset($this->embedded)) {
-            $integration_types['embedded'] = __('Embedded', 'flitt-woocommerce-payment-gateway');
+            $integration_types['embedded'] = __('Embedded', 'flitt-payment-gateway-for-woocommerce');
         }
 
         if (isset($this->hosted)) {
-            $integration_types['hosted'] = __('Hosted', 'flitt-woocommerce-payment-gateway');
+            $integration_types['hosted'] = __('Hosted', 'flitt-payment-gateway-for-woocommerce');
         }
 
         if (isset($this->seamless)) {
-            $integration_types['seamless'] = __('Seamless (support only old checkout)', 'flitt-woocommerce-payment-gateway');
+            $integration_types['seamless'] = __('Seamless (support only old checkout)', 'flitt-payment-gateway-for-woocommerce');
         }
 
         return $integration_types;
@@ -603,7 +608,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
     {
         $order_statuses = function_exists('wc_get_order_statuses') ? wc_get_order_statuses() : [];
         $statuses = [
-            'default' => __('Default status', 'flitt-woocommerce-payment-gateway')
+            'default' => __('Default status', 'flitt-payment-gateway-for-woocommerce')
         ];
         if ($order_statuses) {
             foreach ($order_statuses as $k => $v) {
@@ -654,15 +659,15 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
                 exit; // just ignore reverse callback
             }
             // order switch status process
-            $orderID = strstr($requestBody['order_id'], self::ORDER_SEPARATOR, true);
+            $orderID = strstr(sanitize_text_field($requestBody['order_id']), self::ORDER_SEPARATOR, true);
             $order = wc_get_order($orderID);
             $this->clearCache($requestBody, $orderID); // remove checkoutToken if exist
 
-            do_action('wc_gateway_flitt_receive_valid_callback', $requestBody, $order);
+            do_action('flitt_wc_gateway_receive_valid_callback', $requestBody, $order);
 
             switch ($requestBody['order_status']) {
                 case self::ORDER_APPROVED: //we recive with this status in 3 type transaction callback - purchase, capture and partial reverse
-                    $this->flittPaymentComplete($order, $requestBody['payment_id']);
+                    $this->flittPaymentComplete($order, (int)$requestBody['payment_id']);
                     break;
                 case self::ORDER_CREATED:
                 case self::ORDER_PROCESSING:
@@ -672,16 +677,17 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
                 case self::ORDER_DECLINED:
                     $newOrderStatus = $this->declined_order_status != 'default' ? $this->declined_order_status : 'failed';
                     /* translators: 1) flitt order status 2) flitt order id */
-                    $orderNote = sprintf(__('Transaction ERROR: order %1$s<br/>Flitt ID: %2$s', 'flitt-woocommerce-payment-gateway'), $requestBody['order_status'], $requestBody['payment_id']);
+                    $orderNote = sprintf(__('Transaction ERROR: order %1$s<br/>Flitt ID: %2$s', 'flitt-payment-gateway-for-woocommerce'), sanitize_text_field($requestBody['order_status']), (int)$requestBody['payment_id']);
                     $order->update_status($newOrderStatus, $orderNote);
                     break;
                 case self::ORDER_EXPIRED:
                     $newOrderStatus = $this->expired_order_status != 'default' ? $this->expired_order_status : 'cancelled';
-                    $orderNote = sprintf(__('Transaction ERROR: order %1$s<br/>Flitt ID: %2$s', 'flitt-woocommerce-payment-gateway'), $requestBody['order_status'], $requestBody['payment_id']);
+                    /* translators: 1) flitt order status 2) flitt order id */
+                    $orderNote = sprintf(__('Transaction ERROR: order %1$s<br/>Flitt ID: %2$s', 'flitt-payment-gateway-for-woocommerce'), sanitize_text_field($requestBody['order_status']), $requestBody['payment_id']);
                     $order->update_status($newOrderStatus, $orderNote);
                     break;
                 default:
-                    throw new Exception (__('Unhandled flitt order status', 'flitt-woocommerce-payment-gateway'));
+                    throw new Exception (__('Unhandled flitt order status', 'flitt-payment-gateway-for-woocommerce'));
             }
         } catch (Exception $e) {
             if (!empty($order))
@@ -705,7 +711,7 @@ class WC_Flitt_Payment_Gateway extends WC_Payment_Gateway
         if (!$order->is_paid()) {
             $order->payment_complete($transactionID);
             /* translators: flitt order id */
-            $orderNote = sprintf(__('Flitt payment successful.<br/>Flitt ID: %1$s<br/>', 'flitt-woocommerce-payment-gateway'), $transactionID);
+            $orderNote = sprintf(__('Flitt payment successful.<br/>Flitt ID: %1$s<br/>', 'flitt-payment-gateway-for-woocommerce'), $transactionID);
 
             if ($this->completed_order_status != 'default') {
                 WC()->cart->empty_cart();

@@ -6,22 +6,22 @@ if (!defined('ABSPATH')) {
 /**
  * Compatibility class for Subscriptions.
  */
-class WC_Flitt_Subscriptions_Compat
+class Flitt_WC_Subscriptions_Compat
 {
     const META_NAME_FLITT_RECTOKEN = 'flitt_token';
 
     /**
-     * @var WC_Flitt_Payment_Gateway
+     * @var Flitt_WC_Payment_Gateway
      */
     private $paymentGateway;
 
     public function __construct($paymentGateway)
     {
         $this->paymentGateway = $paymentGateway;
-        add_filter('wc_gateway_flitt_payment_params', [$this, 'subscriptionsPaymentParams'], 10, 2);
-        add_filter('wc_gateway_flitt_process_payment_complete', [$this, 'subscriptionsProcessPaymentComplete'], 10, 2);
+        add_filter('flitt_wc_gateway_flitt_payment_params', [$this, 'subscriptionsPaymentParams'], 10, 2);
+        add_filter('flitt_wc_gateway_process_payment_complete', [$this, 'subscriptionsProcessPaymentComplete'], 10, 2);
         add_action('woocommerce_scheduled_subscription_payment_' . $this->paymentGateway->id, [$this, 'scheduled_subscription_payment'], 10, 2);
-        add_action('wc_gateway_flitt_receive_valid_callback', [$this, 'saveToken'], 10, 2);
+        add_action('flitt_wc_gateway_receive_valid_callback', [$this, 'saveToken'], 10, 2);
     }
 
     public function subscriptionsPaymentParams($params, $order)
@@ -29,7 +29,7 @@ class WC_Flitt_Subscriptions_Compat
         if ($this->has_subscription($order)) {
             $params['required_rectoken'] = 'Y';
             if ((int)$order->get_total() === 0) {
-                $order->add_order_note(__('Payment free trial verification', 'flitt-woocommerce-payment-gateway'));
+                $order->add_order_note(__('Payment free trial verification', 'flitt-payment-gateway-for-woocommerce'));
                 $params['verification'] = 'Y';
                 $params['amount'] = 1;
             }
@@ -44,7 +44,7 @@ class WC_Flitt_Subscriptions_Compat
 
         if ($this->has_subscription($order)) {
             if (get_current_user_id() === 0) {
-                wc_add_notice(__('You must be logged in.', 'flitt-woocommerce-payment-gateway'), 'error');
+                wc_add_notice(__('You must be logged in.', 'flitt-payment-gateway-for-woocommerce'), 'error');
                 return [
                     'result' => 'fail',
                     'redirect' => $woocommerce->cart->get_checkout_url()
@@ -115,7 +115,7 @@ class WC_Flitt_Subscriptions_Compat
             $customerId = $renewal_order->get_customer_id();
 
             if (!$customerId)
-                throw new Exception(__('Customer not found.', 'woocommerce'));
+                throw new Exception(__('Customer not found.', 'flitt-payment-gateway-for-woocommerce'));
 
             $token = get_user_meta($customerId, self::META_NAME_FLITT_RECTOKEN);
 
@@ -125,17 +125,19 @@ class WC_Flitt_Subscriptions_Compat
             if ($token[0]['payment_id'] !== $this->paymentGateway->id) //checkToken
                 throw new Exception("Token expired, or token not found.");
 
-//            $renewal_order->add_order_note('Order amount is: ' . $amount_to_charge);
+            $order_desc = sprintf(
+                /* translators: Flitt order number */
+                __('Recurring payment for: %s', 'flitt-payment-gateway-for-woocommerce'),
+                $renewal_order->get_order_number()
+            );
+
             $subscriptionPayment = $this->paymentGateway->recurring([
                 'order_id' => $this->paymentGateway->createFlittOrderID($renewal_order),
                 'amount' => $amount,
                 'rectoken' => $token[0]['token'],
                 'sender_email' => $renewal_order->get_billing_email(),
                 'currency' => get_woocommerce_currency(),
-                'order_desc' => sprintf(
-                    __('Recurring payment for: %s', 'flitt-woocommerce-payment-gateway'),
-                    $renewal_order->get_order_number()
-                ),
+                'order_desc' => $order_desc,
             ]);
 
             if ($subscriptionPayment->order_status === 'approved') {
@@ -146,11 +148,12 @@ class WC_Flitt_Subscriptions_Compat
                 throw new Exception("Transaction ERROR: order $subscriptionPayment->order_status<br/>Flitt ID: $subscriptionPayment->payment_id");
             }
         } catch (Exception $e) {
-            /* translators: error message */
-            $renewal_order->update_status('failed', sprintf(
-                __('Subscription payment failed. Reason: %s', 'flitt-woocommerce-payment-gateway'),
+            $message = sprintf(
+                  /* translators: error message */
+                esc_html__('Subscription payment failed. Reason: %s', 'flitt-payment-gateway-for-woocommerce'),
                 $e->getMessage()
-            ));
+            );
+            $renewal_order->update_status('failed', $message);
         }
     }
 }

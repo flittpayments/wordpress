@@ -12,10 +12,10 @@ trait Flitt_Seamless
             return;
         }
 
-        wp_enqueue_style('flitt-checkout', plugins_url('assets/css/flitt_seamless_old.css', WC_FLITT_BASE_FILE));
-        wp_enqueue_script('flitt_pay_v2', 'https://unpkg.com/flitt-js-sdk/dist/cjs/checkout.js', ['jquery'], WC_FLITT_VERSION, true);
-        wp_enqueue_script('flitt_pay_v2_woocom', plugins_url('assets/js/flitt_seamless.js', WC_FLITT_BASE_FILE), ['flitt_pay_v2'], WC_FLITT_VERSION, true);
-        wp_enqueue_script('flitt_pay_v2_card', plugins_url('assets/js/payform.min.js', WC_FLITT_BASE_FILE), ['flitt_pay_v2_woocom'], WC_FLITT_VERSION, true);
+        wp_enqueue_style('flitt-checkout', plugins_url('assets/css/flitt_seamless_old.css', FLITT_WC_BASE_FILE), array(), FLITT_WC_VERSION);
+        wp_enqueue_script('flitt_pay_v2', plugins_url('checkout.js', FLITT_WC_BASE_FILE), ['jquery'], FLITT_WC_VERSION, true);
+        wp_enqueue_script('flitt_pay_v2_woocom', plugins_url('assets/js/flitt_seamless.js', FLITT_WC_BASE_FILE), ['flitt_pay_v2'], FLITT_WC_VERSION, true);
+        wp_enqueue_script('flitt_pay_v2_card', plugins_url('assets/js/payform.min.js', FLITT_WC_BASE_FILE), ['flitt_pay_v2_woocom'], FLITT_WC_VERSION, true);
 
         wp_localize_script('flitt_pay_v2_woocom', 'flitt_info',
             [
@@ -34,22 +34,22 @@ trait Flitt_Seamless
             <div class="f-container">
                 <div class="input-wrapper">
                     <div class="input-label w-1">
-                        <?php esc_html_e('Card Number:', 'flitt-woocommerce-payment-gateway') ?>
+                        <?php esc_html_e('Card Number:', 'flitt-payment-gateway-for-woocommerce') ?>
                     </div>
                     <div class="input-field w-1">
                         <input required type="tel" name="card_number" class="input flitt-credit-cart"
                                id="flitt_ccard"
                                autocomplete="cc-number"
-                               placeholder="<?php esc_html_e('XXXXXXXXXXXXXXXX', 'flitt-woocommerce-payment-gateway') ?>"/>
+                               placeholder="<?php esc_html_e('XXXXXXXXXXXXXXXX', 'flitt-payment-gateway-for-woocommerce') ?>"/>
                         <div id="f_card_sep"></div>
                     </div>
                 </div>
                 <div class="input-wrapper">
                     <div class="input-label w-3-2">
-                        <?php esc_html_e('Expiry Date:', 'flitt-woocommerce-payment-gateway') ?>
+                        <?php esc_html_e('Expiry Date:', 'flitt-payment-gateway-for-woocommerce') ?>
                     </div>
                     <div class="input-label w-4 w-rigth">
-                        <?php esc_html_e('CVV2:', 'flitt-woocommerce-payment-gateway') ?>
+                        <?php esc_html_e('CVV2:', 'flitt-payment-gateway-for-woocommerce') ?>
                     </div>
                     <div class="input-field w-4">
                         <input required type="tel" name="expiry_month" id="flitt_expiry_month"
@@ -65,13 +65,13 @@ trait Flitt_Seamless
                         <input autocomplete="off" required type="tel" name="cvv2" id="flitt_cvv2"
                                onkeydown="nextInput(this,event)"
                                class="input"
-                               placeholder="<?php esc_html_e('XXX', 'flitt-woocommerce-payment-gateway') ?>"/>
+                               placeholder="<?php esc_html_e('XXX', 'flitt-payment-gateway-for-woocommerce') ?>"/>
                     </div>
                 </div>
                 <div style="display: none" class="input-wrapper stack-1">
                     <div class="input-field w-1">
                         <input id="submit_flitt_checkout_form" type="submit" class="button"
-                               value="<?php esc_html_e('Pay', 'flitt-woocommerce-payment-gateway') ?>"/>
+                               value="<?php esc_html_e('Pay', 'flitt-payment-gateway-for-woocommerce') ?>"/>
                     </div>
                 </div>
                 <div class="error-wrapper"></div>
@@ -88,7 +88,7 @@ trait Flitt_Seamless
      */
     public function custom_order_button_html($button)
     {
-        $order_button_text = __('Place order', 'flitt-woocommerce-payment-gateway');
+        $order_button_text = __('Place order', 'flitt-payment-gateway-for-woocommerce');
         $js_event = "flitt_submit_order(event);";
         $button = '<button type="submit" onClick="' . esc_attr($js_event) . '" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="' . esc_attr($order_button_text) . '" data-value="' . esc_attr($order_button_text) . '" >' . esc_attr($order_button_text) . '</button>';
 
@@ -98,7 +98,7 @@ trait Flitt_Seamless
     /**
      * Process checkout func
      */
-    public function generate_ajax_order_flitt_info()
+    public function flitt_generate_ajax_order_info()
     {
         check_ajax_referer('flitt-submit-nonce', 'nonce_code');
         wc_maybe_define_constant('WOOCOMMERCE_CHECKOUT', true);
