@@ -1,44 +1,43 @@
-=== Flitt — WooCommerce Payment Gateway ===
-Contributors: flitteu
-Tags: payments, payment gateway, woocommerce, online payment, merchant, credit card, flitt, apple pay, payment request, google pay
+=== Flitt payment gateway for WooCommerce ===
+Contributors: flittpayments
+Tags: payments, payment gateway, woocommerce, online payment, merchant, credit card, flitt
 Requires at least: 3.5
-Tested up to: 6.0.1
-Requires PHP: 5.6
-Stable tag: 4.0.1
+Tested up to: 6.9
+Requires PHP: 7.0
+Stable tag: 4.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+== Short Description ==
+The plugin for WooCommerce allows you to integrate flitt.com the online payment form on the Checkout page of your online store.
 
 == Description ==
 The plugin for WooCommerce allows you to integrate the online payment form on the Checkout page of your online store.
 
-Flitt’s [WooCommerce Payment Gateway plugin](https://flitt.com/gb/plugins/woocommerce/) for online stores, based on CMS Wordpress provides businesses with a single platform for quick and secure accepting payments on the site, and its customers with convenient ways to pay for goods and services of their interest. After connecting the system, your customers will be able to pay for purchases using bank cards, online banking, mobile payments.
+Flitt’s [WooCommerce Payment Gateway plugin](https://flitt.com/) for online stores, based on CMS Wordpress provides businesses with a single platform for quick and secure accepting payments on the site, and its customers with convenient ways to pay for goods and services of their interest. After connecting the system, your customers will be able to pay for purchases using bank cards, online banking, mobile payments.
 
-The ability to pay in a convenient way increases customer loyalty, increases the frequency of purchases and helps entrepreneurs earn more. The Flitt platform has already been connected to more than 8000 entrepreneurs around the world — from small start-ups and niche stores to international companies with millions of turnover.
+The ability to pay in a convenient way increases customer loyalty, increases the frequency of purchases and helps entrepreneurs earn more. The Flitt platform has already been connected to more than 300 entrepreneurs — from small start-ups and niche stores to international companies with millions of turnover.
 
-We already work in [33 countries](https://docs.flitt.com/supported-countries/), accept payments from any country, and support more than [100 currencies](https://docs.flitt.com/docs/page/27/), cooperate with banks of the European Union, UK, Eastern Europe, Ukraine and constantly expand our presence around the world.
+We already work in [5 countries](https://docs.flitt.com/supported-countries/), accept payments from any country, and support more than [8 currencies](https://docs.flitt.com/api/currencies/).
 
 
 == Reasons to choose Flitt ==
-* We accept payments in all the countries in 100 currencies
 * A wide range of payment methods: credit cards, local means of payment, Internet banks
 * Support for recurring payments — regular debit from the client card for subscription services
 * Holding system — freezing money on the client’s card for up to 25 days with the possibility of debit or refund in 1 click
 * Tokenization — automatic filling in the details of the client card upon re-entry
 * Roles system — the ability to create users with different access rights to the personal account
 * Maximum security level: three levels of anti-fraud protection, SSL/TLS encryption, 3D Secure technology
-* [Detailed analytics](https://flitt.com/en/products/personal-cabinet/) on payments and invoices, the formation of customized reports in the user's personal account
+* Detailed analytics on payments and invoices, the formation of customized reports in the user's personal account
 
 
 == Supported payment methods ==
 
 = Bank cards =
-* Visa, MasterCard, Maestro, American Express, Discover, JCB ([full list](https://docs.flitt.com/api/order-parameters/))
-
-= Alternative payment methods =
-* Trustpay, Alipay, WeChat Pay, Safetypay, iDEAL, SEPA, Skrill ([full list](https://docs.flitt.com/api/order-parameters/))
+* Visa, MasterCard ([full list](https://docs.flitt.com/api/order-parameters/))
 
 = Internet banking =
-* Banks in 26 countries ([full list](https://docs.flitt.com/supported-countries/))
+* Banks in 5 countries ([full list](https://docs.flitt.com/supported-countries/))
 
 
 == Platform features and benefits ==
@@ -74,28 +73,6 @@ We help the sellers get to better know their customers. The built-in analytics s
 The system also provides analytics on customers, showing in which ways payment is most often made, from which devices, countries and in what currency. The received data can be viewed in your Flitt account or converted into reports and saved to a computer.
 
 
-== Screenshots ==
-1. Plugin settings
-2. Plugin settings
-3. Plugin switching-on
-4. Order status
-5. Payment window in your account on the site
-6. Payment page as part of the site design
-7. Separate payment page on the side of Flitt
-8. Failed payment
-9. Successful payment
-
-
-== Tariffs ==
-Only commission with payment. It is possible to adjust payment of the commission on itself, or to impose on the client.
-
-[See current tariffs on the Flitt website](https://flitt.com)
-
-
-== FAQ ==
-Some answers you can find here [FAQ](https://flitt.com)
-
-
 == Installation instructions for the plugin ==
 
 = 1. Module installation =
@@ -103,7 +80,7 @@ Some answers you can find here [FAQ](https://flitt.com)
 There are two ways to install the plugin:
 
 1.    Download Flitt payment acceptance plugin for WooCommerce from the WordPress add-ons directory. Unpack this plugin into the /wp-content/plugins/ directory. After that activate it in the “Plugins” menu.
-2.    Use the installation on the link replacing “site.com” with the address of your site: [site.com/wp-admin/plugin-install.php?tab=plugin-information&plugin=flitt-woocommerce-payment-gateway](http://site.com/wp-admin/plugin-install.php?tab=plugin-information&plugin=flitt-woocommerce-payment-gateway)
+2.    Use the installation on the link replacing “site.com” with the address of your site: [site.com/wp-admin/plugin-install.php?tab=plugin-information&plugin=flitt-payment-gateway-for-woocommerce](http://site.com/wp-admin/plugin-install.php?tab=plugin-information&plugin=flitt-payment-gateway-for-woocommerce)
 
 
 = 2. Module activation =
@@ -127,108 +104,31 @@ To set up the payment acceptance plugin, do the following:
 
 Done, now you can accept payments from the customers!
 
+== Development / Source Code ==
+
+This plugin ships production-ready, compiled JavaScript/CSS assets for performance and smaller package size.
+In accordance with the WordPress.org plugin guidelines (human-readable code), the unminified source code
+and build instructions are publicly available here:
+
+* Source repository (unminified / development sources): https://github.com/flittpayments/checkout-vue/tree/latest/packages/checkout
+https://github.com/jondavidjohn/payform/tree/master
+
+
+== Undocumented use of a 3rd Party / external service ==
+
+This plugin integrates with the external payment service **Flitt** (https://flitt.com/) to create and process payments.
+
+When a customer places an order, the plugin connects to Flitt to:
+* create a payment / checkout session;
+* redirect the customer or display an embedded payment form hosted by Flitt;
+* receive payment status updates (callbacks/webhooks) and update the WooCommerce order;
+* fetch transaction information required to complete the payment flow.
+
+Data sent to Flitt may include (as required for payment processing): order identifier, amount, currency, customer billing/shipping details, and other checkout metadata. The exact data depends on the merchant’s Flitt configuration and the checkout scenario.
+
+This third-party service is required for the plugin to function because payment authorization and processing are handled by Flitt.
+**Complaints** (https://flitt.com/wp-content/uploads/2025/06/%E1%83%9E%E1%83%A0%E1%83%94%E1%83%A2%E1%83%94%E1%83%9C%E1%83%96%E1%83%98%E1%83%94%E1%83%91%E1%83%98-02.06.2025.pdf). **privacy policy** (https://flitt.com/wp-content/uploads/2024/11/Privacy_Policy_flitt.pdf)
 
 == Changelog ==
-= 1.0.0 =
+= 4.0.3 =
 * First release
-= 1.0.1 =
-add default success page
-= 2.0 =
-change to host-to-host
-= 2.2 =
-stability update
-= 2.2.3 =
-change payment complete status
-= 2.3.0 =
-some fix, duplicate update
-= 2.4.0 =
-Added v2 js Api
-= 2.4.1 =
-Added js Mask CCard
-= 2.4.2 =
-some fix php tags
-= 2.4.3 =
-Added Refund function
-= 2.4.4 =
-Fixed checkout card
-= 2.4.5 =
-Fix for php 5.3 <
-= 2.5.2 =
-Added instant redirect
-= 2.5.3 =
-Styles moved to merchant portal
-= 2.5.6 =
-Added order statuses to settings page
-= 2.5.8 =
-New logo and testing mode
-= 2.6.3 =
-Fixed default options
-= 2.6.5 =
-Added pre-orders
-= 2.6.7 =
-Added subscription
-= 2.6.8 =
-Refund fix
-= 2.6.9 =
-Added some API request error handler
-= 3.0.0 =
-Add Bank and Local payment methods
-Add support checkout 2.0
-Add some hooks and filters
-Add MP transaction link
-Add send reservation data (anti-fraud, ОФД, etc.)
-Add better order status matching
-Remove old unused settings
-Fix callback url
-Fix PHP 8 compatibility
-= 3.0.1 =
-Fix relative server_callback_url
-= 3.0.2 =
-Add send email renewal order payment info
-Add more informative WP remote_post errors
-= 3.0.3 =
-Fixed handle POST form callback
-
-== Upgrade Notice ==
-
-= 1.0.0 =
-Add pop-up mode
-= 1.0.1 =
-add default success page
-= 2.0 =
-change to host-to-host
-= 2.2 =
-stability update
-= 2.2.2 =
-add expired callback
-= 2.2.3 =
-change payment complete status
-= 2.3.0 =
-some fix, duplicate update
-= 2.4.0 =
-Added v2 js Api
-= 2.4.1 =
-Added js Mask CCard
-= 2.4.2 =
-some fix php tags
-= 2.4.3 =
-Added Refund function
-= 2.4.4 =
-Fixed checkout card
-= 2.4.6 =
-Order notify update
-= 2.4.7 =
-Unification css containers
-= 2.4.8 =
-Stability update
-= 2.4.9 =
-Added multi currencies support(WMPL)
-= 2.5.0 =
-Added token caching
-= 2.5.2 =
-Added instant redirect
-= 2.5.3 =
-Styles moved to merchant portal
-= 3.0.0 =
-Up WooCommerce required minimum version to 3.0.
-Add support checkout 2.0.

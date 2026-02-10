@@ -24,7 +24,7 @@ function flitt_submit_order(e) {
         if (!f_valid_cvv2(a.val()))return flitt_error(a);
         jQuery("#checkout_flitt_form").find(".error-wrapper").hide();
         var c = r.serialize() + "&" + jQuery.param({
-                action: "generate_ajax_order_flitt_info",
+                action: "flitt_generate_ajax_order_info",
                 nonce_code: flitt_info.nonce
             });
         f_block(jQuery("#checkout_flitt_form")), f_block(jQuery("#place_order")), jQuery.post(flitt_info.url, c, function (e) {

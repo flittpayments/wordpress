@@ -1,27 +1,27 @@
 <?php
 
-class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
+class Flitt_WC_Gateway_Card extends Flitt_WC_Payment_Gateway
 {
     use Flitt_Embedded;
     use Flitt_Hosted;
     use Flitt_Seamless;
 
     /**
-     * @var WC_Flitt_Subscriptions_Compat
+     * @var Flitt_WC_Subscriptions_Compat
      */
     private $subscriptions;
     /**
-     * @var WC_Flitt_Pre_Orders_Compat
+     * @var Flitt_WC_Pre_Orders_Compat
      */
     private $pre_orders;
 
     public function __construct()
     {
         $this->id = 'flitt'; // payment gateway plugin ID
-        $this->icon = plugins_url('assets/img/logo.svg', WC_FLITT_BASE_FILE); // URL of the icon that will be displayed on checkout page near your gateway name
+        $this->icon = plugins_url('assets/img/logo.svg', FLITT_WC_BASE_FILE); // URL of the icon that will be displayed on checkout page near your gateway name
         $this->has_fields = false; // in case you need a custom credit card form
         $this->method_title = 'Flitt';
-        $this->method_description = __('Card payments, Apple/Google Pay', 'flitt-woocommerce-payment-gateway');
+        $this->method_description = __('Card payments, Apple/Google Pay', 'flitt-payment-gateway-for-woocommerce');
 
         $this->supports = [
             'products',
@@ -54,11 +54,11 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
         $this->declined_order_status = $this->get_option('declined_order_status') ? $this->get_option('declined_order_status') : false;
 
         if (class_exists('WC_Pre_Orders_Order')) {
-            $this->pre_orders = new WC_Flitt_Pre_Orders_Compat($this);
+            $this->pre_orders = new Flitt_WC_Pre_Orders_Compat($this);
         }
 
         if (class_exists('WC_Subscriptions_Order')) {
-            $this->subscriptions = new WC_Flitt_Subscriptions_Compat($this);
+            $this->subscriptions = new Flitt_WC_Subscriptions_Compat($this);
         }
 
         parent::__construct();
@@ -69,7 +69,7 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
      */
     public function admin_options()
     {
-        do_action('wc_gateway_flitt_admin_options');
+        do_action('flitt_wc_gateway_admin_options');
         parent::admin_options();
     }
 
@@ -77,91 +77,91 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
     {
         $this->form_fields = [
             'enabled' => [
-                'title' => __('Enable/Disable', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Enable/Disable', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'checkbox',
-                'label' => __('Enable Flitt Gateway', 'flitt-woocommerce-payment-gateway'),
+                'label' => __('Enable Flitt Gateway', 'flitt-payment-gateway-for-woocommerce'),
                 'default' => 'no',
-                'description' => __('Show in the Payment List as a payment option', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('Show in the Payment List as a payment option', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'test_mode' => [
-                'title' => __('Test mode', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Test mode', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'checkbox',
-                'label' => __('Enable Test Mode', 'flitt-woocommerce-payment-gateway'),
+                'label' => __('Enable Test Mode', 'flitt-payment-gateway-for-woocommerce'),
                 'default' => 'no',
-                'description' => __('Place the payment gateway in test mode using test Merchant ID', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('Place the payment gateway in test mode using test Merchant ID', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'logging' => [
-                'title' => __('Debug Mode', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Debug Mode', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'checkbox',
-                'label' => __('Enable Debug Mode', 'flitt-woocommerce-payment-gateway'),
+                'label' => __('Enable Debug Mode', 'flitt-payment-gateway-for-woocommerce'),
                 'default' => 'no',
-                'description' => __('Inject detailed debug metadata into all requests (with this behavior disabled in production).', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('Inject detailed debug metadata into all requests (with this behavior disabled in production).', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'title' => [
-                'title' => __('Title', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Title', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'text',
-                'description' => __('This controls the title which the user sees during checkout', 'flitt-woocommerce-payment-gateway'),
-                'default' => __('Flitt Cards, Apple/Google Pay', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('This controls the title which the user sees during checkout', 'flitt-payment-gateway-for-woocommerce'),
+                'default' => __('Flitt Cards, Apple/Google Pay', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true,
             ],
             'description' => [
-                'title' => __('Description:', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Description:', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'textarea',
-                'default' => __('Pay securely by Credit/Debit Card or by Apple/Google Pay with Flitt.', 'flitt-woocommerce-payment-gateway'),
-                'description' => __('This controls the description which the user sees during checkout', 'flitt-woocommerce-payment-gateway'),
+                'default' => __('Pay securely by Credit/Debit Card or by Apple/Google Pay with Flitt.', 'flitt-payment-gateway-for-woocommerce'),
+                'description' => __('This controls the description which the user sees during checkout', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'flitt_merchant_id' => [
-                'title' => __('Merchant ID', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Merchant ID', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'text',
-                'description' => __('Given to Merchant by Flitt', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('Given to Merchant by Flitt', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'flitt_secret_key' => [
-                'title' => __('Secret Key', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Secret Key', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'text',
-                'description' => __('Given to Merchant by Flitt', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('Given to Merchant by Flitt', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'integration_type' => [
-                'title' => __('Payment integration type', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Payment integration type', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'select',
                 'options' => $this->getIntegrationTypes(),
-                'description' => __('How the payment form will be displayed', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('How the payment form will be displayed', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'redirect_page_id' => [
-                'title' => __('Return Page', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Return Page', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'select',
-                'options' => $this->flitt_get_pages(__('Default order page', 'flitt-woocommerce-payment-gateway')),
-                'description' => __('URL of success page', 'flitt-woocommerce-payment-gateway'),
+                'options' => $this->flitt_get_pages(__('Default order page', 'flitt-payment-gateway-for-woocommerce')),
+                'description' => __('URL of success page', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'completed_order_status' => [
-                'title' => __('Payment completed order status', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Payment completed order status', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'select',
                 'options' => $this->getPaymentOrderStatuses(),
                 'default' => 'none',
-                'description' => __('The completed order status after successful payment', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('The completed order status after successful payment', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'expired_order_status' => [
-                'title' => __('Payment expired order status', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Payment expired order status', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'select',
                 'options' => $this->getPaymentOrderStatuses(),
                 'default' => 'none',
-                'description' => __('Order status when payment was expired', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('Order status when payment was expired', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'declined_order_status' => [
-                'title' => __('Payment declined order status', 'flitt-woocommerce-payment-gateway'),
+                'title' => __('Payment declined order status', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'select',
                 'options' => $this->getPaymentOrderStatuses(),
                 'default' => 'none',
-                'description' => __('Order status when payment was declined', 'flitt-woocommerce-payment-gateway'),
+                'description' => __('Order status when payment was declined', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
         ];
@@ -196,14 +196,16 @@ class WC_Gateway_Flitt_Card extends WC_Flitt_Payment_Gateway
                     return true;
                 case 'processing':
                     /* translators: 1) reverse status */
-                    $order->add_order_note(sprintf(__('Refund Flitt status: %1$s', 'flitt-woocommerce-payment-gateway'), $reverse->reverse_status));
+                    $order->add_order_note(sprintf(__('Refund Flitt status: %1$s', 'flitt-payment-gateway-for-woocommerce'), $reverse->reverse_status));
                     return true;
                 case 'declined':
-                    $noteText = sprintf(__('Refund Flitt status: %1$s', 'flitt-woocommerce-payment-gateway'), $reverse->reverse_status);
+                    /* translators: reverse flitt status */
+                    $noteText = sprintf(__('Refund Flitt status: %1$s', 'flitt-payment-gateway-for-woocommerce'), $reverse->reverse_status);
                     $order->add_order_note($noteText);
                     throw new Exception($noteText);
                 default:
-                    $noteText = sprintf(__('Refund Flitt status: %1$s', 'flitt-woocommerce-payment-gateway'), 'Unknown');
+                    /* translators: unknown flitt status */
+                    $noteText = sprintf(__('Refund Flitt status: %1$s', 'flitt-payment-gateway-for-woocommerce'), 'Unknown');
                     $order->add_order_note($noteText);
                     throw new Exception($noteText);
             }

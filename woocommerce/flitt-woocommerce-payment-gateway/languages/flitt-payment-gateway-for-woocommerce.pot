@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce - Flitt payment gateway 3.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/flitt-woocommerce-payment-gateway\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/flitt-payment-gateway-for-woocommerce\n"
 "Last-Translator: Dmytro Barybin <d.baribin@flitt.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "POT-Creation-Date: 2021-08-25T16:52:55+03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
-"X-Domain: flitt-woocommerce-payment-gateway\n"
+"X-Domain: flitt-payment-gateway-for-woocommerce\n"
 
 #. Plugin Name of the plugin
 msgid "WooCommerce - Flitt payment gateway"
@@ -34,78 +34,78 @@ msgstr ""
 msgid "https://flitt.com"
 msgstr ""
 
-#: flitt-woocommerce-payment-gateway.php:100
+#: flitt-payment-gateway-for-woocommerce.php:100
 msgid "Settings"
 msgstr ""
 
 #. translators: 1) required WC version 2) current WC version
-#: flitt-woocommerce-payment-gateway.php:173
+#: flitt-payment-gateway-for-woocommerce.php:173
 msgid "Payment Gateway Flitt requires WooCommerce %1$s or greater to be installed and active. WooCommerce %2$s is no longer supported."
 msgstr ""
 
 #. translators: 1) required PHP version 2) current PHP version
-#: flitt-woocommerce-payment-gateway.php:180
+#: flitt-payment-gateway-for-woocommerce.php:180
 msgid "The minimum PHP version required for Flitt Payment Gateway is %1$s. You are running %2$s."
 msgstr ""
 
-#: includes/abstract-wc-flitt-payment-gateway.php:99
+#: includes/abstract-flitt-payment-gateway.php:99
 msgid "Order №: "
 msgstr ""
 
-#: includes/abstract-wc-flitt-payment-gateway.php:319
+#: includes/abstract-flitt-payment-gateway.php:319
 msgid "Embedded"
 msgstr ""
 
-#: includes/abstract-wc-flitt-payment-gateway.php:323
+#: includes/abstract-flitt-payment-gateway.php:323
 msgid "Hosted"
 msgstr ""
 
-#: includes/abstract-wc-flitt-payment-gateway.php:327
+#: includes/abstract-flitt-payment-gateway.php:327
 msgid "Seamless"
 msgstr ""
 
-#: includes/abstract-wc-flitt-payment-gateway.php:372
+#: includes/abstract-flitt-payment-gateway.php:372
 msgid "Default status"
 msgstr ""
 
 #. translators: 1) flitt order status 2) flitt order id
-#: includes/abstract-wc-flitt-payment-gateway.php:415
-#: includes/abstract-wc-flitt-payment-gateway.php:420
+#: includes/abstract-flitt-payment-gateway.php:415
+#: includes/abstract-flitt-payment-gateway.php:420
 msgid "Transaction ERROR: order %1$s<br/>Flitt ID: %2$s"
 msgstr ""
 
-#: includes/abstract-wc-flitt-payment-gateway.php:424
+#: includes/abstract-flitt-payment-gateway.php:424
 msgid "Unhandled flitt order status"
 msgstr ""
 
 #. translators: flitt order id
-#: includes/abstract-wc-flitt-payment-gateway.php:448
+#: includes/abstract-flitt-payment-gateway.php:448
 msgid "Flitt payment successful.<br/>Flitt ID: %1$s<br/>"
 msgstr ""
 
-#: includes/compat/class-wc-flitt-pre-orders-compat.php:40
+#: includes/compat/class-flitt-pre-orders-compat.php:40
 msgid "Flitt capture successful."
 msgstr ""
 
 #. translators: error message
-#: includes/compat/class-wc-flitt-pre-orders-compat.php:47
+#: includes/compat/class-flitt-pre-orders-compat.php:47
 msgid "Pre-order payment for order failed. Reason: %s"
 msgstr ""
 
-#: includes/compat/class-wc-flitt-pre-orders-compat.php:61
+#: includes/compat/class-flitt-pre-orders-compat.php:61
 msgid "Note: transactions by using Pre-Orders must be finished in 7 days term or it will be auto-captured."
 msgstr ""
 
-#: includes/compat/class-wc-flitt-subscriptions-compat.php:32
+#: includes/compat/class-flitt-subscriptions-compat.php:32
 msgid "Payment free trial verification"
 msgstr ""
 
-#: includes/compat/class-wc-flitt-subscriptions-compat.php:47
+#: includes/compat/class-flitt-subscriptions-compat.php:47
 msgid "You must be logged in."
 msgstr ""
 
 #. translators: error message
-#: includes/compat/class-wc-flitt-subscriptions-compat.php:146
+#: includes/compat/class-flitt-subscriptions-compat.php:146
 msgid "Subscription payment failed. Reason: %s"
 msgstr ""
 
@@ -138,160 +138,160 @@ msgid "Place order"
 msgstr ""
 
 #. translators: link
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:15
-#: includes/payment-methods/class-wc-gateway-flitt-localmethods.php:16
+#: includes/payment-methods/class-gateway-flitt-bank.php:15
+#: includes/payment-methods/class-gateway-flitt-localmethods.php:16
 msgid "All other general Flitt settings can be adjusted <a href=\"%s\">here</a>."
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:43
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:79
+#: includes/payment-methods/class-gateway-flitt-bank.php:43
+#: includes/payment-methods/class-gateway-flitt-card.php:79
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:45
+#: includes/payment-methods/class-gateway-flitt-bank.php:45
 msgid "Enable Flitt Bank Gateway"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:47
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:83
+#: includes/payment-methods/class-gateway-flitt-bank.php:47
+#: includes/payment-methods/class-gateway-flitt-card.php:83
 msgid "Show in the Payment List as a payment option"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:51
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:95
-#: includes/payment-methods/class-wc-gateway-flitt-localmethods.php:51
+#: includes/payment-methods/class-gateway-flitt-bank.php:51
+#: includes/payment-methods/class-gateway-flitt-card.php:95
+#: includes/payment-methods/class-gateway-flitt-localmethods.php:51
 msgid "Title"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:53
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:97
-#: includes/payment-methods/class-wc-gateway-flitt-localmethods.php:53
+#: includes/payment-methods/class-gateway-flitt-bank.php:53
+#: includes/payment-methods/class-gateway-flitt-card.php:97
+#: includes/payment-methods/class-gateway-flitt-localmethods.php:53
 msgid "This controls the title which the user sees during checkout"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:54
+#: includes/payment-methods/class-gateway-flitt-bank.php:54
 msgid "Flitt Online Banking"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:60
+#: includes/payment-methods/class-gateway-flitt-bank.php:60
 msgid "Payments with online banking."
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:61
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:105
-#: includes/payment-methods/class-wc-gateway-flitt-localmethods.php:60
+#: includes/payment-methods/class-gateway-flitt-bank.php:61
+#: includes/payment-methods/class-gateway-flitt-card.php:105
+#: includes/payment-methods/class-gateway-flitt-localmethods.php:60
 msgid "This controls the description which the user sees during checkout"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:65
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:121
-#: includes/payment-methods/class-wc-gateway-flitt-localmethods.php:64
+#: includes/payment-methods/class-gateway-flitt-bank.php:65
+#: includes/payment-methods/class-gateway-flitt-card.php:121
+#: includes/payment-methods/class-gateway-flitt-localmethods.php:64
 msgid "Payment integration type"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-bank.php:68
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:124
-#: includes/payment-methods/class-wc-gateway-flitt-localmethods.php:67
+#: includes/payment-methods/class-gateway-flitt-bank.php:68
+#: includes/payment-methods/class-gateway-flitt-card.php:124
+#: includes/payment-methods/class-gateway-flitt-localmethods.php:67
 msgid "How the payment form will be displayed"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:24
+#: includes/payment-methods/class-gateway-flitt-card.php:24
 msgid "Card payments, Apple/Google Pay"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:81
+#: includes/payment-methods/class-gateway-flitt-card.php:81
 msgid "Enable Flitt Gateway"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:87
+#: includes/payment-methods/class-gateway-flitt-card.php:87
 msgid "Test mode"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:89
+#: includes/payment-methods/class-gateway-flitt-card.php:89
 msgid "Enable Test Mode"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:91
+#: includes/payment-methods/class-gateway-flitt-card.php:91
 msgid "Place the payment gateway in test mode using test Merchant ID"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:98
+#: includes/payment-methods/class-gateway-flitt-card.php:98
 msgid "Flitt Cards, Apple/Google Pay"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:102
+#: includes/payment-methods/class-gateway-flitt-card.php:102
 msgid "Description:"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:104
+#: includes/payment-methods/class-gateway-flitt-card.php:104
 msgid "Pay securely by Credit/Debit Card or by Apple/Google Pay with Flitt."
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:109
+#: includes/payment-methods/class-gateway-flitt-card.php:109
 msgid "Merchant ID"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:111
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:117
+#: includes/payment-methods/class-gateway-flitt-card.php:111
+#: includes/payment-methods/class-gateway-flitt-card.php:117
 msgid "Given to Merchant by Flitt"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:115
+#: includes/payment-methods/class-gateway-flitt-card.php:115
 msgid "Secret Key"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:128
+#: includes/payment-methods/class-gateway-flitt-card.php:128
 msgid "Return Page"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:130
+#: includes/payment-methods/class-gateway-flitt-card.php:130
 msgid "Default order page"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:131
+#: includes/payment-methods/class-gateway-flitt-card.php:131
 msgid "URL of success page"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:135
+#: includes/payment-methods/class-gateway-flitt-card.php:135
 msgid "Payment completed order status"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:139
+#: includes/payment-methods/class-gateway-flitt-card.php:139
 msgid "The completed order status after successful payment"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:143
+#: includes/payment-methods/class-gateway-flitt-card.php:143
 msgid "Payment expired order status"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:147
+#: includes/payment-methods/class-gateway-flitt-card.php:147
 msgid "Order status when payment was expired"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:151
+#: includes/payment-methods/class-gateway-flitt-card.php:151
 msgid "Payment declined order status"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:155
+#: includes/payment-methods/class-gateway-flitt-card.php:155
 msgid "Order status when payment was declined"
 msgstr ""
 
 #. translators: 1) reverse status
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:188
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:191
-#: includes/payment-methods/class-wc-gateway-flitt-card.php:195
+#: includes/payment-methods/class-gateway-flitt-card.php:188
+#: includes/payment-methods/class-gateway-flitt-card.php:191
+#: includes/payment-methods/class-gateway-flitt-card.php:195
 msgid "Refund Flitt status: %1$s"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-localmethods.php:54
+#: includes/payment-methods/class-gateway-flitt-localmethods.php:54
 msgid "Flitt Local Methods"
 msgstr ""
 
-#: includes/payment-methods/class-wc-gateway-flitt-localmethods.php:61
+#: includes/payment-methods/class-gateway-flitt-localmethods.php:61
 msgid "Pay with your local bank with Flitt online payments."
 msgstr ""
 
 #. translators: order id
-#: includes/compat/class-wc-flitt-subscriptions-compat.php:136
+#: includes/compat/class-flitt-subscriptions-compat.php:136
 msgid "Recurring payment for: %s"
 msgstr ""

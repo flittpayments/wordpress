@@ -9,7 +9,7 @@ final class Flitt_Gateway_Blocks extends AbstractPaymentMethodType
 
     public function initialize()
     {
-        $this->gateway = new WC_Flitt_Payment_Gateway();
+        $this->gateway = new Flitt_WC_Payment_Gateway();
         $this->settings = get_option( 'woocommerce_flitt_settings', [] );
     }
 
@@ -22,7 +22,7 @@ final class Flitt_Gateway_Blocks extends AbstractPaymentMethodType
     {
         wp_register_script(
             'flitt-gateway-blocks-integration',
-            plugins_url('assets/js/flitt_block.js', WC_FLITT_BASE_FILE),
+            plugins_url('assets/js/flitt_block.js', FLITT_WC_BASE_FILE),
             [
                 'wc-blocks-registry',
                 'wc-settings',
@@ -30,7 +30,7 @@ final class Flitt_Gateway_Blocks extends AbstractPaymentMethodType
                 'wp-html-entities',
                 'wp-i18n',
             ],
-            null,
+            FLITT_WC_VERSION,
             true
         );
         if (function_exists('wp_set_script_translations')) {
