@@ -5,7 +5,7 @@
  * Description: Flitt Payment Gateway for WooCommerce.
  * Author: Flitt
  * Author URI: https://github.com/flittpayments/wordpress/tree/main/woocommerce
- * Version: 4.0.3
+ * Version: 4.0.4
  * Text Domain: flitt-payment-gateway-for-woocommerce
  * Domain Path: /languages
  * Tested up to: 6.9

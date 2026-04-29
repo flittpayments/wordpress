@@ -4,7 +4,7 @@ Tags: payments, payment gateway, woocommerce, online payment, merchant, credit c
 Requires at least: 3.5
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 4.0.3
+Stable tag: 4.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -132,3 +132,5 @@ This third-party service is required for the plugin to function because payment 
 == Changelog ==
 = 4.0.3 =
 * First release
+= 4.0.4 =
+* Changed priority of methods

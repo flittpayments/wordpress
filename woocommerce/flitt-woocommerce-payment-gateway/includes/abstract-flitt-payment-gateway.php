@@ -554,12 +554,12 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
     {
         $integration_types = [];
 
-        if (isset($this->embedded)) {
-            $integration_types['embedded'] = __('Embedded', 'flitt-payment-gateway-for-woocommerce');
-        }
-
         if (isset($this->hosted)) {
             $integration_types['hosted'] = __('Hosted', 'flitt-payment-gateway-for-woocommerce');
+        }
+
+        if (isset($this->embedded)) {
+            $integration_types['embedded'] = __('Embedded', 'flitt-payment-gateway-for-woocommerce');
         }
 
         if (isset($this->seamless)) {
