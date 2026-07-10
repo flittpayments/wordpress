@@ -4,7 +4,7 @@ Tags: payments, payment gateway, woocommerce, online payment, merchant, credit c
 Requires at least: 3.5
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 4.1.3
+Stable tag: 4.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -145,7 +145,5 @@ This third-party service is required for the plugin to function because payment 
 * Pay By Bank no longer forces the Demo Bank in test mode and omits payment_method when multiple banks are enabled
 * Seamless integration falls back to the hosted redirect on the block checkout
 * Bumped asset version to refresh cached checkout scripts
-= 4.1.2 =
-* Fix: strip the "|" character from request parameters (e.g. product names in the order description) before signing, as Flitt uses it as the signature delimiter
-= 4.1.3 =
-* Fix: also strip "|" from nested reservation data (product names, customer fields) before it is base64-encoded and sent
+= 4.1.4 =
+* Fix: strip the "|" character from the order description and the reservation data (product names, customer fields) before the request is sent, as Flitt uses "|" as the signature delimiter

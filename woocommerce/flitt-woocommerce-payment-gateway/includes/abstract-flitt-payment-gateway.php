@@ -205,12 +205,6 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
         }
         $requestData['merchant_id'] = $this->flitt_merchant_id;
 
-        // Flitt joins signed parameters with "|" when building the signature string and
-        // does not support "|" inside signed values (e.g. a product name in order_desc
-        // or a refund comment). Strip it before signing so our signature matches Flitt's
-        // and the sent value stays identical to the signed value.
-        $requestData = $this->removeSignatureDelimiters($requestData);
-
         $debug_data = null;
         if ($this->debug_mode) {
             try{
@@ -307,24 +301,24 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
 
     /**
      * Remove the "|" character from every string value, recursing into nested arrays.
-     * Flitt uses "|" as the signature delimiter and does not support it inside
-     * parameter values, including nested reservation data (e.g. product names). It
-     * must be stripped before the signature is calculated and the request is sent.
+     * Flitt uses "|" as the signature delimiter and does not support it inside the
+     * reservation data (e.g. product names, customer fields), so it is stripped before
+     * that data is base64-encoded and sent.
      *
-     * @param array $requestData
+     * @param array $data
      * @return array
      */
-    protected function removeSignatureDelimiters($requestData)
+    protected function removeSignatureDelimiters($data)
     {
-        foreach ($requestData as $key => $value) {
+        foreach ($data as $key => $value) {
             if (is_string($value)) {
-                $requestData[$key] = str_replace('|', '', $value);
+                $data[$key] = str_replace('|', '', $value);
             } elseif (is_array($value)) {
-                $requestData[$key] = $this->removeSignatureDelimiters($value);
+                $data[$key] = $this->removeSignatureDelimiters($value);
             }
         }
 
-        return $requestData;
+        return $data;
     }
 
     /**
@@ -429,7 +423,15 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
             'reservation_data' => $this->getReservationData($order),
         ];
 
-        return apply_filters('flitt_wc_gateway_flitt_payment_params', $params, $order);
+        $params = apply_filters('flitt_wc_gateway_flitt_payment_params', $params, $order);
+
+        // Flitt uses "|" as the signature delimiter and does not support it inside the
+        // order description, so strip it (e.g. when it contains a product name).
+        if (isset($params['order_desc']) && is_string($params['order_desc'])) {
+            $params['order_desc'] = str_replace('|', '', $params['order_desc']);
+        }
+
+        return $params;
     }
 
     /**
