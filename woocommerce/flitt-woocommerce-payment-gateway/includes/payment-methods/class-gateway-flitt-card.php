@@ -40,8 +40,8 @@ class Flitt_WC_Gateway_Card extends Flitt_WC_Payment_Gateway
 
         // Load the settings.
         $this->init_settings();
-        $this->title = $this->get_option('title');
-        $this->description = $this->get_option('description');
+        $this->title = $this->maybe_translate($this->get_option('title'));
+        $this->description = $this->maybe_translate($this->get_option('description'));
         $this->enabled = $this->get_option('enabled');
         $this->test_mode = 'yes' === $this->get_option('test_mode');
         $this->debug_mode = 'yes' === $this->get_option('logging');
@@ -73,6 +73,46 @@ class Flitt_WC_Gateway_Card extends Flitt_WC_Payment_Gateway
         parent::admin_options();
     }
 
+    /**
+     * Logos shown next to the method on the frontend checkout:
+     * Flitt, TBC, Apple Pay, Google Pay. Static so the block integration can reuse
+     * the same list without instantiating the gateway.
+     *
+     * @return string[]
+     */
+    public static function checkout_logo_urls()
+    {
+        return [
+            plugins_url('assets/img/logo.svg', FLITT_WC_BASE_FILE),
+            plugins_url('assets/img/bank-tbc.svg', FLITT_WC_BASE_FILE),
+            plugins_url('assets/img/apple-pay.svg', FLITT_WC_BASE_FILE),
+            plugins_url('assets/img/google-pay.svg', FLITT_WC_BASE_FILE),
+        ];
+    }
+
+    /**
+     * Render the checkout logos. Admin keeps the single Flitt brand logo.
+     *
+     * @return string
+     */
+    public function get_icon()
+    {
+        $logos = $this->is_admin_display()
+            ? [plugins_url('assets/img/logo.svg', FLITT_WC_BASE_FILE)]
+            : self::checkout_logo_urls();
+
+        $html = '';
+        foreach ($logos as $logo) {
+            $html .= sprintf(
+                '<img src="%1$s" alt="%2$s" style="max-height:24px;width:auto;margin-left:4px;display:inline-block;vertical-align:middle;" />',
+                esc_url($logo),
+                esc_attr($this->get_title())
+            );
+        }
+
+        return apply_filters('woocommerce_gateway_icon', $html, $this->id);
+    }
+
     public function init_form_fields()
     {
         $this->form_fields = [
@@ -88,7 +128,7 @@ class Flitt_WC_Gateway_Card extends Flitt_WC_Payment_Gateway
                 'title' => __('Test mode', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'checkbox',
                 'label' => __('Enable Test Mode', 'flitt-payment-gateway-for-woocommerce'),
-                'default' => 'no',
+                'default' => 'yes',
                 'description' => __('Place the payment gateway in test mode using test Merchant ID', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
@@ -117,12 +157,14 @@ class Flitt_WC_Gateway_Card extends Flitt_WC_Payment_Gateway
             'flitt_merchant_id' => [
                 'title' => __('Merchant ID', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'text',
+                'default' => '1549901',
                 'description' => __('Given to Merchant by Flitt', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'flitt_secret_key' => [
                 'title' => __('Secret Key', 'flitt-payment-gateway-for-woocommerce'),
                 'type' => 'text',
+                'default' => 'test',
                 'description' => __('Given to Merchant by Flitt', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],

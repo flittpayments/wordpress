@@ -11,6 +11,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 // Delete options.
 delete_option( 'flitt_woocommerce_version' );
 delete_option( 'woocommerce_flitt_settings' );
+delete_option( 'woocommerce_flitt_installments_settings' );
+delete_option( 'woocommerce_flitt_opb_settings' );
 delete_option( 'woocommerce_flitt_local_methods_settings' );
 delete_option( 'woocommerce_flitt_bank_settings' );
 delete_option( 'flitt_unique' ); // <3.0.0 option

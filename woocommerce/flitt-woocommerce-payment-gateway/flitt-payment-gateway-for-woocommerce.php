@@ -5,7 +5,7 @@
  * Description: Flitt Payment Gateway for WooCommerce.
  * Author: Flitt
  * Author URI: https://github.com/flittpayments/wordpress/tree/main/woocommerce
- * Version: 4.0.4
+ * Version: 4.1.3
  * Text Domain: flitt-payment-gateway-for-woocommerce
  * Domain Path: /languages
  * Tested up to: 6.9
@@ -32,7 +32,7 @@ if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) && ! class_exists( 'Woo
 
 define("FLITT_WC_PLUGIN_DIR", dirname(__FILE__));
 define("FLITT_WC_BASE_FILE", __FILE__);
-define('FLITT_WC_VERSION', '4.0.3');
+define('FLITT_WC_VERSION', '4.1.3');
 define('FLITT_WC_MIN_PHP_VER', '5.6.0');
 define('FLITT_WC_MIN_WC_VER', '3.0');
 
@@ -84,6 +84,8 @@ if ( ! class_exists( 'Flitt_PaymentGateway' ) ) {
                 'woocommerce_blocks_payment_method_type_registration',
                 function( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
                     $payment_method_registry->register( new Flitt_Gateway_Blocks );
+                    $payment_method_registry->register( new Flitt_Installments_Gateway_Blocks );
+                    $payment_method_registry->register( new Flitt_Opb_Gateway_Blocks );
                 }
             );
         }
@@ -99,6 +101,9 @@ if ( ! class_exists( 'Flitt_PaymentGateway' ) ) {
 
             require_once dirname(__FILE__) . '/includes/abstract-flitt-payment-gateway.php';
             require_once dirname(__FILE__) . '/includes/payment-methods/class-gateway-flitt-card.php';
+            require_once dirname(__FILE__) . '/includes/payment-methods/class-gateway-flitt-alt.php';
+            require_once dirname(__FILE__) . '/includes/payment-methods/class-gateway-flitt-installments.php';
+            require_once dirname(__FILE__) . '/includes/payment-methods/class-gateway-flitt-opb.php';
 
             require_once dirname(__FILE__) . '/includes/compat/class-flitt-pre-orders-compat.php';
             require_once dirname(__FILE__) . '/includes/compat/class-flitt-subscriptions-compat.php';
@@ -119,6 +124,8 @@ if ( ! class_exists( 'Flitt_PaymentGateway' ) ) {
         public function add_gateways($gateways)
         {
             $gateways[] = 'Flitt_WC_Gateway_Card';
+            $gateways[] = 'Flitt_WC_Gateway_Installments';
+            $gateways[] = 'Flitt_WC_Gateway_Opb';
             return $gateways;
         }
 

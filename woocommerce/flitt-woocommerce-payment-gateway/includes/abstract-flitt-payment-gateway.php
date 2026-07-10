@@ -70,6 +70,39 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
 
 
     /**
+     * Translate a stored setting value (e.g. a default title/description) through the
+     * plugin text domain at runtime. Stored option values are emitted verbatim by
+     * WordPress, so localized defaults would otherwise always display in English.
+     * Custom values entered by the merchant are returned unchanged (no matching
+     * translation exists for them).
+     *
+     * @param string $text
+     * @return string
+     */
+    public function maybe_translate($text)
+    {
+        if (!is_string($text) || '' === $text) {
+            return $text;
+        }
+
+        // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+        return __($text, 'flitt-payment-gateway-for-woocommerce');
+    }
+
+    /**
+     * Whether we are rendering in the admin (settings / block editor) rather than on
+     * the frontend checkout. Used to show the Flitt brand logo in admin and the
+     * method-specific logos at checkout. Frontend wc-ajax / Store API requests are
+     * not admin, so they correctly return false.
+     *
+     * @return bool
+     */
+    public function is_admin_display()
+    {
+        return is_admin() && ! wp_doing_ajax();
+    }
+
+    /**
      * setup merchant id and secret key
      */
     public function set_params()
@@ -99,6 +132,10 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
     {
         $response = $this->sendToAPI('checkout/url', $requestData);
 
+        if (empty($response->checkout_url)) {
+            throw new Exception(esc_html__('Flitt did not return a checkout URL. The selected payment method may be unavailable for this merchant, currency or environment. In test mode, installments and open banking work only with the Demo Bank.', 'flitt-payment-gateway-for-woocommerce'));
+        }
+
         return $response->checkout_url;
     }
 
@@ -109,7 +146,26 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
     {
         $response = $this->sendToAPI('checkout/token', $requestData);
 
+        if (empty($response->token)) {
+            throw new Exception(esc_html__('Flitt did not return a payment token. The selected payment method may be unavailable for this merchant, currency or environment. In test mode, installments and open banking work only with the Demo Bank.', 'flitt-payment-gateway-for-woocommerce'));
+        }
+
         return $response->token;
+    }
+
+    /**
+     * Whether the current request is the WooCommerce Blocks / Store API checkout.
+     * Seamless (inline card) integration is not supported there.
+     *
+     * @return bool
+     */
+    protected function is_block_checkout_request()
+    {
+        if (function_exists('WC') && method_exists(WC(), 'is_store_api_request')) {
+            return WC()->is_store_api_request();
+        }
+
+        return defined('REST_REQUEST') && REST_REQUEST;
     }
 
     /**
@@ -148,6 +204,12 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
             throw new Exception(esc_html__('Flitt merchant credentials are missing.', 'flitt-payment-gateway-for-woocommerce'));
         }
         $requestData['merchant_id'] = $this->flitt_merchant_id;
+
+        // Flitt joins signed parameters with "|" when building the signature string and
+        // does not support "|" inside signed values (e.g. a product name in order_desc
+        // or a refund comment). Strip it before signing so our signature matches Flitt's
+        // and the sent value stays identical to the signed value.
+        $requestData = $this->removeSignatureDelimiters($requestData);
 
         $debug_data = null;
         if ($this->debug_mode) {
@@ -244,6 +306,28 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
     }
 
     /**
+     * Remove the "|" character from every string value, recursing into nested arrays.
+     * Flitt uses "|" as the signature delimiter and does not support it inside
+     * parameter values, including nested reservation data (e.g. product names). It
+     * must be stripped before the signature is calculated and the request is sent.
+     *
+     * @param array $requestData
+     * @return array
+     */
+    protected function removeSignatureDelimiters($requestData)
+    {
+        foreach ($requestData as $key => $value) {
+            if (is_string($value)) {
+                $requestData[$key] = str_replace('|', '', $value);
+            } elseif (is_array($value)) {
+                $requestData[$key] = $this->removeSignatureDelimiters($value);
+            }
+        }
+
+        return $requestData;
+    }
+
+    /**
      * @param $data
      * @param $password
      * @param bool $encoded
@@ -305,7 +389,11 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
         try {
             if ($this->integration_type === 'embedded') {
                 $processResult['redirect'] = $order->get_checkout_payment_url(true);
-            } elseif ($this->integration_type === 'seamless') {
+            } elseif ($this->integration_type === 'seamless' && ! $this->is_block_checkout_request()) {
+                // Seamless runs an inline card flow that only exists on the classic
+                // checkout page. On the block/Store-API checkout it cannot run, so we
+                // fall back to the hosted redirect below instead of returning an
+                // unusable (empty-redirect) token result.
                 $processResult['token'] = $this->getCheckoutToken($order);
             } else {
                 $paymentParams = $this->getPaymentParams($order);
@@ -514,6 +602,9 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
             'products' => $this->getReservationDataProducts($order->get_items())
         ];
 
+        // Strip "|" from the reservation content (e.g. product names) before it is
+        // base64-encoded, so decoded values on Flitt's side stay signature-safe.
+        $reservationData = $this->removeSignatureDelimiters($reservationData);
 
         return base64_encode(json_encode($reservationData));
     }

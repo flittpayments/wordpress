@@ -4,7 +4,7 @@ Tags: payments, payment gateway, woocommerce, online payment, merchant, credit c
 Requires at least: 3.5
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 4.0.4
+Stable tag: 4.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,7 +65,7 @@ There are many cases when you need to check the client’s solvency or freeze a 
 = Mobile payments =
 Flitt is fully optimized for use on smartphones, tablets, laptops, desktops, TVs. Your customers will be comfortable to make purchases from any device.
 
-We also took care of the sellers, they can access the personal account via the web interface or a convenient mobile application for [Android](https://play.google.com/store/apps/details?id=com.cloudipsp.flittportal&hl=en) and [iOS](https://itunes.apple.com/ua/app/flitt-merchant-portal/id1273277350?l=en). From the application you can view the statistics, generate invoices, work with payments.
+We also took care of the sellers, they can access the personal account via the web interface or a convenient mobile application for [Android](https://play.google.com/store/apps/details?id=com.flitt) and [iOS](https://apps.apple.com/ua/app/flitt-dashboard/id6758352461). From the application you can view the statistics, generate invoices, work with payments.
 
 = Smart analytics =
 We help the sellers get to better know their customers. The built-in analytics system allows real-time tracking of the status of all the payments, to see at what stage of the purchase each customer is.
@@ -127,10 +127,25 @@ When a customer places an order, the plugin connects to Flitt to:
 Data sent to Flitt may include (as required for payment processing): order identifier, amount, currency, customer billing/shipping details, and other checkout metadata. The exact data depends on the merchant’s Flitt configuration and the checkout scenario.
 
 This third-party service is required for the plugin to function because payment authorization and processing are handled by Flitt.
-**Complaints** (https://flitt.com/wp-content/uploads/2025/06/%E1%83%9E%E1%83%A0%E1%83%94%E1%83%A2%E1%83%94%E1%83%9C%E1%83%96%E1%83%98%E1%83%94%E1%83%91%E1%83%98-02.06.2025.pdf). **privacy policy** (https://flitt.com/wp-content/uploads/2024/11/Privacy_Policy_flitt.pdf)
+**Complaints** (https://flitt.com/wp-content/uploads/2026/06/Complaints-ENG-21.05.pdf). **privacy policy** (https://flitt.com/wp-content/uploads/2026/02/Privacy-Policy-ENG-22.01.2025.pdf)
 
 == Changelog ==
 = 4.0.3 =
 * First release
 = 4.0.4 =
 * Changed priority of methods
+= 4.1.0 =
+* Added "TBC Buy Now Pay Later" (installments) payment method as a separate button
+* Added "Pay By Bank" (open banking) payment method as a separate button
+* Both methods reuse the main Flitt Merchant ID / Secret Key and can be enabled/disabled independently
+* Added an admin multiselect to pick which banks/payment methods are offered (controls the logos shown and the bank routing)
+* Added Georgian (ka_GE) translations for the new payment methods
+= 4.1.1 =
+* Checkout logos: Flitt Cards shows Flitt + TBC + Apple Pay + Google Pay; TBC BNPL shows Flitt + TBC; Pay By Bank shows the enabled bank logos
+* Pay By Bank no longer forces the Demo Bank in test mode and omits payment_method when multiple banks are enabled
+* Seamless integration falls back to the hosted redirect on the block checkout
+* Bumped asset version to refresh cached checkout scripts
+= 4.1.2 =
+* Fix: strip the "|" character from request parameters (e.g. product names in the order description) before signing, as Flitt uses it as the signature delimiter
+= 4.1.3 =
+* Fix: also strip "|" from nested reservation data (product names, customer fields) before it is base64-encoded and sent
