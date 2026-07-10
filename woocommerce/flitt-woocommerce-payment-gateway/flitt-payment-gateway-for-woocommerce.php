@@ -5,7 +5,7 @@
  * Description: Flitt Payment Gateway for WooCommerce.
  * Author: Flitt
  * Author URI: https://github.com/flittpayments/wordpress/tree/main/woocommerce
- * Version: 4.1.4
+ * Version: 4.1.6
  * Text Domain: flitt-payment-gateway-for-woocommerce
  * Domain Path: /languages
  * Tested up to: 6.9
@@ -32,7 +32,7 @@ if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) && ! class_exists( 'Woo
 
 define("FLITT_WC_PLUGIN_DIR", dirname(__FILE__));
 define("FLITT_WC_BASE_FILE", __FILE__);
-define('FLITT_WC_VERSION', '4.1.4');
+define('FLITT_WC_VERSION', '4.1.6');
 define('FLITT_WC_MIN_PHP_VER', '5.6.0');
 define('FLITT_WC_MIN_WC_VER', '3.0');
 
@@ -118,7 +118,27 @@ if ( ! class_exists( 'Flitt_PaymentGateway' ) ) {
             add_action('before_woocommerce_init',  [$this, 'declare_cart_checkout_blocks_compatibility']);
             add_action('before_woocommerce_init',  [$this, 'declare_flitt_hpos_compatibility']);
             add_action( 'woocommerce_blocks_loaded',  [$this, 'flitt_register_order_approval_payment_method_type']);
+            add_action('wp_enqueue_scripts', [$this, 'enqueue_checkout_bfcache_fix']);
 
+        }
+
+        /**
+         * Reload the checkout when it is restored from the browser back-forward cache,
+         * so the "Place order" button is clickable again after returning from Flitt.
+         */
+        public function enqueue_checkout_bfcache_fix()
+        {
+            if ( ! function_exists( 'is_checkout' ) || ( ! is_checkout() && ! is_cart() ) ) {
+                return;
+            }
+
+            wp_enqueue_script(
+                'flitt-bfcache',
+                plugins_url( 'assets/js/flitt_bfcache.js', FLITT_WC_BASE_FILE ),
+                [],
+                FLITT_WC_VERSION,
+                true
+            );
         }
 
         public function add_gateways($gateways)

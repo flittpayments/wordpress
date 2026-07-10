@@ -52,6 +52,15 @@ abstract class Flitt_WC_Gateway_Alt extends Flitt_WC_Payment_Gateway
     protected $force_demo_bank_in_test = true;
 
     /**
+     * Sentinel option value meaning "all available banks": no `payment_method` is
+     * sent, so Flitt shows every bank it supports (no hardcoded list). Empty string
+     * disables the option (installments do not use it).
+     *
+     * @var string
+     */
+    protected $all_methods_value = '';
+
+    /**
      * Predefined payment methods the merchant can pick from in the admin
      * multiselect. Keyed by the Flitt `payment_method` value.
      *
@@ -223,6 +232,17 @@ abstract class Flitt_WC_Gateway_Alt extends Flitt_WC_Payment_Gateway
     }
 
     /**
+     * Whether the "all available banks" sentinel is part of the current selection.
+     *
+     * @param string[] $selected
+     * @return bool
+     */
+    protected function is_all_banks_selected($selected)
+    {
+        return '' !== $this->all_methods_value && in_array($this->all_methods_value, $selected, true);
+    }
+
+    /**
      * Notice that credentials are shared with the main Flitt gateway.
      */
     public function admin_options()
@@ -282,6 +302,12 @@ abstract class Flitt_WC_Gateway_Alt extends Flitt_WC_Payment_Gateway
 
         $selected = $this->get_selected_payment_methods();
 
+        // "All available banks" selected: send no payment_method so the customer picks
+        // their bank on the Flitt page (and future banks are covered automatically).
+        if ($this->is_all_banks_selected($selected)) {
+            return '';
+        }
+
         if (count($selected) === 1) {
             return $selected[0];
         }
@@ -328,7 +354,9 @@ abstract class Flitt_WC_Gateway_Alt extends Flitt_WC_Payment_Gateway
         }
 
         $selected = $this->get_selected_payment_methods();
-        if (empty($selected)) {
+
+        // "All available banks" (or nothing) selected: show every known bank logo.
+        if (empty($selected) || $this->is_all_banks_selected($selected)) {
             $selected = array_keys($this->available_payment_methods);
         }
 

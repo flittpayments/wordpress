@@ -42,53 +42,53 @@ msgstr ""
 "Для корректной работы платежного шлюза Flitt требуется PHP версии %1$s и "
 "выше. Вы используете %2$s."
 
-#: includes/abstract-flitt-payment-gateway.php:123
+#: includes/abstract-flitt-payment-gateway.php:136
 msgid ""
 "Flitt did not return a checkout URL. The selected payment method may be "
 "unavailable for this merchant, currency or environment. In test mode, "
 "installments and open banking work only with the Demo Bank."
 msgstr ""
 
-#: includes/abstract-flitt-payment-gateway.php:137
+#: includes/abstract-flitt-payment-gateway.php:150
 msgid ""
 "Flitt did not return a payment token. The selected payment method may be "
 "unavailable for this merchant, currency or environment. In test mode, "
 "installments and open banking work only with the Demo Bank."
 msgstr ""
 
-#: includes/abstract-flitt-payment-gateway.php:191
+#: includes/abstract-flitt-payment-gateway.php:204
 msgid "Flitt merchant credentials are missing."
 msgstr ""
 
-#: includes/abstract-flitt-payment-gateway.php:605
+#: includes/abstract-flitt-payment-gateway.php:651
 msgid "Hosted"
 msgstr "Перенаправление"
 
-#: includes/abstract-flitt-payment-gateway.php:609
+#: includes/abstract-flitt-payment-gateway.php:655
 msgid "Embedded"
 msgstr "Форма на отдельной странице"
 
-#: includes/abstract-flitt-payment-gateway.php:613
+#: includes/abstract-flitt-payment-gateway.php:659
 msgid "Seamless (support only old checkout)"
 msgstr ""
 
-#: includes/abstract-flitt-payment-gateway.php:658
+#: includes/abstract-flitt-payment-gateway.php:704
 msgid "Default status"
 msgstr "Стандартный статус"
 
 #. translators: 1) flitt order status 2) flitt order id
-#: includes/abstract-flitt-payment-gateway.php:727
-#: includes/abstract-flitt-payment-gateway.php:733
+#: includes/abstract-flitt-payment-gateway.php:773
+#: includes/abstract-flitt-payment-gateway.php:779
 #, php-format
 msgid "Transaction ERROR: order %1$s<br/>Flitt ID: %2$s"
 msgstr "ОШИБКА транзакции: заказ %1$s<br/>Flitt ID: %2$s"
 
-#: includes/abstract-flitt-payment-gateway.php:737
+#: includes/abstract-flitt-payment-gateway.php:783
 msgid "Unhandled flitt order status"
 msgstr "Unhandled flitt order status"
 
 #. translators: flitt order id
-#: includes/abstract-flitt-payment-gateway.php:761
+#: includes/abstract-flitt-payment-gateway.php:807
 #, php-format
 msgid "Flitt payment successful.<br/>Flitt ID: %1$s<br/>"
 msgstr "Платеж успешен.<br/>Flitt ID: %1$s<br/>"
@@ -163,66 +163,65 @@ msgstr "Оплатить"
 msgid "Place order"
 msgstr "Заказать"
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:146
-#: includes/payment-methods/class-gateway-flitt-card.php:119
+#: includes/payment-methods/class-gateway-flitt-alt.php:155
+#: includes/payment-methods/class-gateway-flitt-card.php:120
 msgid "Enable/Disable"
 msgstr "Включить/Выключить"
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:148
+#: includes/payment-methods/class-gateway-flitt-alt.php:157
 msgid "Enable this payment method"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:150
-#: includes/payment-methods/class-gateway-flitt-card.php:123
+#: includes/payment-methods/class-gateway-flitt-alt.php:159
+#: includes/payment-methods/class-gateway-flitt-card.php:124
 msgid "Show in the Payment List as a payment option"
 msgstr "Показать в списке платежей как способ оплаты"
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:154
-#: includes/payment-methods/class-gateway-flitt-card.php:143
+#: includes/payment-methods/class-gateway-flitt-alt.php:163
+#: includes/payment-methods/class-gateway-flitt-card.php:144
 msgid "Title"
 msgstr "Заголовок"
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:156
-#: includes/payment-methods/class-gateway-flitt-card.php:145
+#: includes/payment-methods/class-gateway-flitt-alt.php:165
+#: includes/payment-methods/class-gateway-flitt-card.php:146
 msgid "This controls the title which the user sees during checkout"
 msgstr "Заголовок который, видит пользователь в процессе оформления заказа"
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:160
-#: includes/payment-methods/class-gateway-flitt-card.php:150
+#: includes/payment-methods/class-gateway-flitt-alt.php:169
+#: includes/payment-methods/class-gateway-flitt-card.php:151
 msgid "Description:"
 msgstr "Описание:"
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:162
-#: includes/payment-methods/class-gateway-flitt-card.php:153
+#: includes/payment-methods/class-gateway-flitt-alt.php:171
+#: includes/payment-methods/class-gateway-flitt-card.php:154
 msgid "This controls the description which the user sees during checkout"
 msgstr "Описание которое видит пользователь в процессе оформления заказа"
 
-#. translators: for installments — one value is always sent
-#: includes/payment-methods/class-gateway-flitt-alt.php:175
+#: includes/payment-methods/class-gateway-flitt-alt.php:183
 msgid ""
 "Choose which bank(s) to offer. Their logos are shown at checkout. If exactly "
 "one is selected the customer is routed straight to it; otherwise the default "
 "bank is used."
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:177
+#: includes/payment-methods/class-gateway-flitt-alt.php:185
 msgid ""
 "Choose which bank(s) to offer. Their logos are shown at checkout. If exactly "
 "one is selected the customer is routed straight to it; if several are "
 "selected the customer picks the bank on the Flitt page."
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:186
+#: includes/payment-methods/class-gateway-flitt-alt.php:194
 msgid "Test mode enabled. Only Demo bank will work."
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-alt.php:192
+#: includes/payment-methods/class-gateway-flitt-alt.php:200
 #, fuzzy
 msgid "Payment methods / banks"
 msgstr "Платежи через онлайн банкинг."
 
 #. translators: %s: URL of the main Flitt gateway settings
-#: includes/payment-methods/class-gateway-flitt-alt.php:236
+#: includes/payment-methods/class-gateway-flitt-alt.php:255
 #, php-format
 msgid ""
 "This method uses the Merchant ID, Secret Key and test/debug settings from "
@@ -233,166 +232,170 @@ msgstr ""
 msgid "Card payments, Apple/Google Pay"
 msgstr "Оплата банковскими картами, Apple/Google Pay"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:121
+#: includes/payment-methods/class-gateway-flitt-card.php:122
 msgid "Enable Flitt Gateway"
 msgstr "Включить Flitt Gateway"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:127
+#: includes/payment-methods/class-gateway-flitt-card.php:128
 msgid "Test mode"
 msgstr "Тестовый режим"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:129
+#: includes/payment-methods/class-gateway-flitt-card.php:130
 msgid "Enable Test Mode"
 msgstr "Включить тестовый режим"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:131
+#: includes/payment-methods/class-gateway-flitt-card.php:132
 msgid "Place the payment gateway in test mode using test Merchant ID"
 msgstr ""
 "Перевести платежный шлюз в тестовый режим, используя тестовый Merchant ID"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:135
+#: includes/payment-methods/class-gateway-flitt-card.php:136
 msgid "Debug Mode"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-card.php:137
+#: includes/payment-methods/class-gateway-flitt-card.php:138
 #, fuzzy
 msgid "Enable Debug Mode"
 msgstr "Включить тестовый режим"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:139
+#: includes/payment-methods/class-gateway-flitt-card.php:140
 msgid ""
 "Inject detailed debug metadata into all requests (with this behavior "
 "disabled in production)."
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-card.php:146
+#: includes/payment-methods/class-gateway-flitt-card.php:147
 msgid "Flitt Cards, Apple/Google Pay"
 msgstr "Flitt Cards, Apple/Google Pay"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:152
+#: includes/payment-methods/class-gateway-flitt-card.php:153
 msgid "Pay securely by Credit/Debit Card or by Apple/Google Pay with Flitt."
 msgstr ""
 "Безопасная оплата кредитной/дебетовой картой или Apple/Google Pay с помощью "
 "Flitt."
 
-#: includes/payment-methods/class-gateway-flitt-card.php:157
+#: includes/payment-methods/class-gateway-flitt-card.php:158
 msgid "Merchant ID"
 msgstr "Merchant ID"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:160
-#: includes/payment-methods/class-gateway-flitt-card.php:167
+#: includes/payment-methods/class-gateway-flitt-card.php:161
+#: includes/payment-methods/class-gateway-flitt-card.php:168
 msgid "Given to Merchant by Flitt"
 msgstr "Выдается мерчанту Flitt"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:164
+#: includes/payment-methods/class-gateway-flitt-card.php:165
 msgid "Secret Key"
 msgstr "Secret Key"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:171
+#: includes/payment-methods/class-gateway-flitt-card.php:172
 msgid "Payment integration type"
 msgstr "Тип интеграции"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:174
+#: includes/payment-methods/class-gateway-flitt-card.php:175
 msgid "How the payment form will be displayed"
 msgstr "Каким образом будет отображаться форма оплаты"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:178
+#: includes/payment-methods/class-gateway-flitt-card.php:179
 msgid "Return Page"
 msgstr "Страница ответа"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:180
+#: includes/payment-methods/class-gateway-flitt-card.php:181
 msgid "Default order page"
 msgstr "Стандартная страница возврата"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:181
+#: includes/payment-methods/class-gateway-flitt-card.php:182
 msgid "URL of success page"
 msgstr "Страница куда будет направлен пользователь после оплаты"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:185
+#: includes/payment-methods/class-gateway-flitt-card.php:186
 msgid "Payment completed order status"
 msgstr "Статус заказа при успешной оплате"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:189
+#: includes/payment-methods/class-gateway-flitt-card.php:190
 msgid "The completed order status after successful payment"
 msgstr "Статус заказа после успешной оплаты"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:193
+#: includes/payment-methods/class-gateway-flitt-card.php:194
 msgid "Payment expired order status"
 msgstr "Статус заказа платежа с истёкшим сроком"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:197
+#: includes/payment-methods/class-gateway-flitt-card.php:198
 msgid "Order status when payment was expired"
 msgstr "Статус заказа при истечении срока платежа"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:201
+#: includes/payment-methods/class-gateway-flitt-card.php:202
 msgid "Payment declined order status"
 msgstr "Статус заказа отклонённого платежа"
 
-#: includes/payment-methods/class-gateway-flitt-card.php:205
+#: includes/payment-methods/class-gateway-flitt-card.php:206
 msgid "Order status when payment was declined"
 msgstr "Статус заказа при отклонении платежа"
 
 #. translators: 1) reverse status
 #. translators: reverse flitt status
 #. translators: unknown flitt status
-#: includes/payment-methods/class-gateway-flitt-card.php:240
-#: includes/payment-methods/class-gateway-flitt-card.php:244
-#: includes/payment-methods/class-gateway-flitt-card.php:249
+#: includes/payment-methods/class-gateway-flitt-card.php:241
+#: includes/payment-methods/class-gateway-flitt-card.php:245
+#: includes/payment-methods/class-gateway-flitt-card.php:250
 #, php-format
 msgid "Refund Flitt status: %1$s"
 msgstr "Статус возврата Flitt: %1$s"
 
-#: includes/payment-methods/class-gateway-flitt-installments.php:21
+#: includes/payment-methods/class-gateway-flitt-installments.php:22
 msgid "Flitt - TBC Buy Now Pay Later"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-installments.php:22
+#: includes/payment-methods/class-gateway-flitt-installments.php:23
 msgid "TBC Buy Now Pay Later (installments) via Flitt."
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-installments.php:24
-#: includes/payment-methods/class-gateway-flitt-opb.php:29
+#: includes/payment-methods/class-gateway-flitt-installments.php:25
+#: includes/payment-methods/class-gateway-flitt-opb.php:34
 msgid "TBC Bank"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-installments.php:25
-#: includes/payment-methods/class-gateway-flitt-opb.php:33
+#: includes/payment-methods/class-gateway-flitt-installments.php:26
+#: includes/payment-methods/class-gateway-flitt-opb.php:38
 msgid "Demo Bank (test mode)"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-installments.php:40
+#: includes/payment-methods/class-gateway-flitt-installments.php:41
 msgid "TBC Buy Now Pay Later"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-installments.php:41
+#: includes/payment-methods/class-gateway-flitt-installments.php:42
 msgid "Split your purchase into installments with TBC Bank."
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-opb.php:26
+#: includes/payment-methods/class-gateway-flitt-opb.php:30
 msgid "Flitt - Pay By Bank"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-opb.php:27
+#: includes/payment-methods/class-gateway-flitt-opb.php:31
 msgid "Open banking payment (Pay By Bank) via Flitt."
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-opb.php:30
+#: includes/payment-methods/class-gateway-flitt-opb.php:33
+msgid "All available banks"
+msgstr ""
+
+#: includes/payment-methods/class-gateway-flitt-opb.php:35
 msgid "Bank of Georgia"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-opb.php:31
+#: includes/payment-methods/class-gateway-flitt-opb.php:36
 msgid "Credo Bank"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-opb.php:32
+#: includes/payment-methods/class-gateway-flitt-opb.php:37
 msgid "Liberty Bank"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-opb.php:50
+#: includes/payment-methods/class-gateway-flitt-opb.php:55
 msgid "Pay By Bank"
 msgstr ""
 
-#: includes/payment-methods/class-gateway-flitt-opb.php:51
+#: includes/payment-methods/class-gateway-flitt-opb.php:56
 msgid "Pay directly from your bank account via open banking."
 msgstr ""
 

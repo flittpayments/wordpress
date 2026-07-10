@@ -4,7 +4,7 @@ Tags: payments, payment gateway, woocommerce, online payment, merchant, credit c
 Requires at least: 3.5
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 4.1.4
+Stable tag: 4.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -147,3 +147,7 @@ This third-party service is required for the plugin to function because payment 
 * Bumped asset version to refresh cached checkout scripts
 = 4.1.4 =
 * Fix: strip the "|" character from the order description and the reservation data (product names, customer fields) before the request is sent, as Flitt uses "|" as the signature delimiter
+= 4.1.5 =
+* Pay By Bank: added an "All available banks" option (selected by default) that sends no payment_method, so Flitt shows every supported bank without a hardcoded list; the individual banks remain selectable
+= 4.1.6 =
+* Fix: reload the checkout when it is restored from the browser back-forward cache (e.g. pressing Back from the Flitt page), so the "Place order" button is clickable again without a manual refresh
