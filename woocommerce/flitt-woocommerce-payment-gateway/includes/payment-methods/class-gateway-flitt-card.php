@@ -163,9 +163,9 @@ class Flitt_WC_Gateway_Card extends Flitt_WC_Payment_Gateway
             ],
             'flitt_secret_key' => [
                 'title' => __('Secret Key', 'flitt-payment-gateway-for-woocommerce'),
-                'type' => 'text',
-                'default' => 'test',
-                'description' => __('Given to Merchant by Flitt', 'flitt-payment-gateway-for-woocommerce'),
+                'type' => 'password',
+                'default' => '',
+                'description' => __('Given to Merchant by Flitt. Leave blank to keep the currently saved key.', 'flitt-payment-gateway-for-woocommerce'),
                 'desc_tip' => true
             ],
             'integration_type' => [
@@ -207,6 +207,112 @@ class Flitt_WC_Gateway_Card extends Flitt_WC_Payment_Gateway
                 'desc_tip' => true
             ],
         ];
+    }
+
+    /**
+     * Render the secret without putting its stored value into the admin HTML.
+     *
+     * @param string $key
+     * @param array  $data
+     * @return string
+     */
+    public function generate_password_html($key, $data)
+    {
+        if ('flitt_secret_key' !== $key) {
+            return parent::generate_password_html($key, $data);
+        }
+
+        $field_key = $this->get_field_key($key);
+        $defaults = [
+            'title' => '',
+            'description' => '',
+            'desc_tip' => false,
+            'class' => '',
+            'css' => '',
+        ];
+        $data = wp_parse_args($data, $defaults);
+        $storedSettings = get_option($this->get_option_key(), []);
+        $hasSecret = is_array($storedSettings)
+            && isset($storedSettings[$key])
+            && '' !== (string)$storedSettings[$key];
+        $placeholder = $hasSecret
+            ? __('Saved - enter a new key only to replace it', 'flitt-payment-gateway-for-woocommerce')
+            : __('Enter secret key', 'flitt-payment-gateway-for-woocommerce');
+        $showLabel = __('Show', 'flitt-payment-gateway-for-woocommerce');
+        $hideLabel = __('Hide', 'flitt-payment-gateway-for-woocommerce');
+        $showAriaLabel = __('Show Secret Key', 'flitt-payment-gateway-for-woocommerce');
+        $hideAriaLabel = __('Hide Secret Key', 'flitt-payment-gateway-for-woocommerce');
+
+        ob_start();
+        ?>
+        <tr valign="top">
+            <th scope="row" class="titledesc">
+                <label for="<?php echo esc_attr($field_key); ?>">
+                    <?php echo wp_kses_post($data['title']); ?>
+                    <?php echo $this->get_tooltip_html($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                </label>
+            </th>
+            <td class="forminp">
+                <fieldset>
+                    <legend class="screen-reader-text"><span><?php echo wp_kses_post($data['title']); ?></span></legend>
+                    <input
+                        class="input-text regular-input <?php echo esc_attr($data['class']); ?>"
+                        type="password"
+                        name="<?php echo esc_attr($field_key); ?>"
+                        id="<?php echo esc_attr($field_key); ?>"
+                        style="<?php echo esc_attr($data['css']); ?>"
+                        value=""
+                        placeholder="<?php echo esc_attr($placeholder); ?>"
+                        autocomplete="new-password"
+                    />
+                    <button
+                        type="button"
+                        class="button flitt-secret-key-toggle"
+                        aria-controls="<?php echo esc_attr($field_key); ?>"
+                        aria-label="<?php echo esc_attr($showAriaLabel); ?>"
+                        aria-pressed="false"
+                        data-flitt-secret-toggle
+                        data-show-label="<?php echo esc_attr($showLabel); ?>"
+                        data-hide-label="<?php echo esc_attr($hideLabel); ?>"
+                        data-show-aria-label="<?php echo esc_attr($showAriaLabel); ?>"
+                        data-hide-aria-label="<?php echo esc_attr($hideAriaLabel); ?>"
+                    ><?php echo esc_html($showLabel); ?></button>
+                    <?php echo $this->get_description_html($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                </fieldset>
+            </td>
+        </tr>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Preserve the stored secret when the password field is left blank.
+     *
+     * Mask-like values are also ignored to protect against password managers or
+     * security middleware posting a rendered placeholder back to WooCommerce.
+     *
+     * @param string $key
+     * @param mixed  $value
+     * @return string
+     * @throws Exception When the submitted secret is malformed.
+     */
+    public function validate_flitt_secret_key_field($key, $value)
+    {
+        $value = is_string($value) ? wp_unslash($value) : '';
+        $storedSettings = get_option($this->get_option_key(), []);
+        $storedSecret = is_array($storedSettings) && isset($storedSettings[$key])
+            ? (string)$storedSettings[$key]
+            : '';
+
+        if ('' === $value || preg_match('/^[*\x{2022}\x{25CF}]+$/u', $value)) {
+            return $storedSecret;
+        }
+
+        if (strlen($value) > 1024 || preg_match('/[\x00-\x1F\x7F]/', $value)) {
+            throw new Exception(__('Secret Key contains unsupported characters.', 'flitt-payment-gateway-for-woocommerce'));
+        }
+
+        return $value;
     }
 
     public function flittPaymentComplete($order, $transactionID)

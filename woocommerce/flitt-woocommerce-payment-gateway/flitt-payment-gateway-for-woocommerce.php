@@ -5,7 +5,7 @@
  * Description: Flitt Payment Gateway for WooCommerce.
  * Author: Flitt
  * Author URI: https://github.com/flittpayments/wordpress/tree/main/woocommerce
- * Version: 4.1.6
+ * Version: 4.1.8
  * Text Domain: flitt-payment-gateway-for-woocommerce
  * Domain Path: /languages
  * Tested up to: 6.9
@@ -32,7 +32,7 @@ if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) && ! class_exists( 'Woo
 
 define("FLITT_WC_PLUGIN_DIR", dirname(__FILE__));
 define("FLITT_WC_BASE_FILE", __FILE__);
-define('FLITT_WC_VERSION', '4.1.6');
+define('FLITT_WC_VERSION', '4.1.8');
 define('FLITT_WC_MIN_PHP_VER', '5.6.0');
 define('FLITT_WC_MIN_WC_VER', '3.0');
 
@@ -119,7 +119,99 @@ if ( ! class_exists( 'Flitt_PaymentGateway' ) ) {
             add_action('before_woocommerce_init',  [$this, 'declare_flitt_hpos_compatibility']);
             add_action( 'woocommerce_blocks_loaded',  [$this, 'flitt_register_order_approval_payment_method_type']);
             add_action('wp_enqueue_scripts', [$this, 'enqueue_checkout_bfcache_fix']);
+            add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_secret_toggle']);
 
+            // Keep an audit trail of credential changes without logging credentials.
+            add_action('add_option_woocommerce_flitt_settings', [$this, 'audit_flitt_settings_added'], 10, 2);
+            add_action('update_option_woocommerce_flitt_settings', [$this, 'audit_flitt_settings_updated'], 10, 3);
+
+        }
+
+        /**
+         * Log initial Flitt credential configuration without exposing the secret.
+         *
+         * @param string $option
+         * @param mixed  $value
+         */
+        public function audit_flitt_settings_added($option, $value)
+        {
+            $this->log_flitt_credential_change('added', [], $value);
+        }
+
+        /**
+         * Log Flitt credential changes without exposing the secret.
+         *
+         * @param mixed  $old_value
+         * @param mixed  $new_value
+         * @param string $option
+         */
+        public function audit_flitt_settings_updated($old_value, $new_value, $option)
+        {
+            $oldState = $this->get_flitt_credential_state($old_value);
+            $newState = $this->get_flitt_credential_state($new_value);
+
+            if ($oldState === $newState) {
+                return;
+            }
+
+            $this->log_flitt_credential_change('updated', $old_value, $new_value);
+        }
+
+        /**
+         * Build a non-secret credential state suitable for comparison and logging.
+         *
+         * @param mixed $settings
+         * @return array
+         */
+        private function get_flitt_credential_state($settings)
+        {
+            $settings = is_array($settings) ? $settings : [];
+            $secret = isset($settings['flitt_secret_key']) ? (string)$settings['flitt_secret_key'] : '';
+
+            return [
+                'merchant_id' => isset($settings['flitt_merchant_id']) ? (string)$settings['flitt_merchant_id'] : '',
+                'test_mode' => isset($settings['test_mode']) ? (string)$settings['test_mode'] : '',
+                'secret_present' => '' !== $secret,
+                'secret_length' => strlen($secret),
+                'secret_fingerprint' => '' !== $secret ? substr(hash('sha256', $secret), 0, 12) : '',
+            ];
+        }
+
+        /**
+         * Write credential audit context to the WooCommerce log.
+         *
+         * @param string $operation
+         * @param mixed  $old_value
+         * @param mixed  $new_value
+         */
+        private function log_flitt_credential_change($operation, $old_value, $new_value)
+        {
+            if (!function_exists('wc_get_logger')) {
+                return;
+            }
+
+            $requestType = 'web';
+            if (defined('WP_CLI') && WP_CLI) {
+                $requestType = 'wp-cli';
+            } elseif (function_exists('wp_doing_cron') && wp_doing_cron()) {
+                $requestType = 'cron';
+            } elseif (defined('REST_REQUEST') && REST_REQUEST) {
+                $requestType = 'rest';
+            } elseif (function_exists('wp_doing_ajax') && wp_doing_ajax()) {
+                $requestType = 'ajax';
+            }
+
+            wc_get_logger()->notice(
+                'Flitt merchant credential settings changed.',
+                [
+                    'source' => 'flitt-payment-gateway-for-woocommerce',
+                    'operation' => $operation,
+                    'actor_user_id' => get_current_user_id(),
+                    'request_type' => $requestType,
+                    'old' => $this->get_flitt_credential_state($old_value),
+                    'new' => $this->get_flitt_credential_state($new_value),
+                ]
+            );
         }
 
         /**
@@ -135,6 +227,26 @@ if ( ! class_exists( 'Flitt_PaymentGateway' ) ) {
             wp_enqueue_script(
                 'flitt-bfcache',
                 plugins_url( 'assets/js/flitt_bfcache.js', FLITT_WC_BASE_FILE ),
+                [],
+                FLITT_WC_VERSION,
+                true
+            );
+        }
+
+        /**
+         * Load the Secret Key visibility toggle only on WooCommerce settings pages.
+         *
+         * @param string $hookSuffix Current WordPress admin page hook.
+         */
+        public function enqueue_admin_secret_toggle($hookSuffix)
+        {
+            if ('woocommerce_page_wc-settings' !== $hookSuffix) {
+                return;
+            }
+
+            wp_enqueue_script(
+                'flitt-admin-secret-toggle',
+                plugins_url('assets/js/flitt_admin_secret.js', FLITT_WC_BASE_FILE),
                 [],
                 FLITT_WC_VERSION,
                 true

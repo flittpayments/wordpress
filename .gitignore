@@ -1,3 +1,4 @@
 /woocommerce/flitt-woocommerce-payment-gateway/*.po~
 /.idea
 *.Identifier
+/woocommerce/flitt-woocommerce-payment-gateway/tests/*

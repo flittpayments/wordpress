@@ -214,7 +214,10 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
             }
         }
 
-        $requestData['signature'] = $this->getSignature($requestData, $this->flitt_secret_key);
+        // debug_data is diagnostic metadata for Flitt support and is intentionally
+        // excluded from the payment signature. Keep signing in one method so adding
+        // debug_data earlier in this flow cannot silently change that contract.
+        $requestData = $this->signRequestData($requestData);
 
         if ($debug_data) {
             $requestData['debug_data'] = $debug_data;
@@ -245,6 +248,24 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
             throw new Exception(esc_html($result->response->error_message));
 
         return $result->response;
+    }
+
+    /**
+     * Add the Flitt signature to an outgoing API request.
+     *
+     * Diagnostic metadata is not part of the signed payment payload.
+     *
+     * @param array $requestData
+     * @return array
+     */
+    protected function signRequestData($requestData)
+    {
+        $signatureData = $requestData;
+        unset($signatureData['signature'], $signatureData['debug_data']);
+
+        $requestData['signature'] = $this->getSignature($signatureData, $this->flitt_secret_key);
+
+        return $requestData;
     }
     /**
      * Generate Debug Data
@@ -719,18 +740,23 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
      */
     public function validateRequest($requestBody)
     {
-        if (empty($requestBody)){
+        if (empty($requestBody) || !is_array($requestBody)){
             throw new Exception('Empty request body.');
         }
 
-        if ($this->flitt_merchant_id != $requestBody['merchant_id']){
+        if (!isset($requestBody['merchant_id'], $requestBody['signature'])) {
+            throw new Exception('Required callback authentication data is missing.');
+        }
+
+        if ((string)$this->flitt_merchant_id !== (string)$requestBody['merchant_id']){
             throw new Exception ('Merchant data is incorrect.');
         }
 
-        $requestSignature = $requestBody['signature'];
+        $requestSignature = (string)$requestBody['signature'];
         unset($requestBody['response_signature_string']);
         unset($requestBody['signature']);
-        if ($requestSignature !== $this->getSignature($requestBody, $this->flitt_secret_key)) {
+        $expectedSignature = $this->getSignature($requestBody, $this->flitt_secret_key);
+        if (!hash_equals($expectedSignature, $requestSignature)) {
             throw new Exception ('Signature is not valid');
         }
     }
@@ -744,7 +770,11 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
     {
         try {
             $this->set_params();
-            $requestBody = !empty($_POST) ? $_POST : json_decode(file_get_contents('php://input'), true);
+            // WordPress adds slashes to superglobal request data. Signature validation
+            // must use the original values sent by Flitt.
+            $requestBody = !empty($_POST)
+                ? wp_unslash($_POST)
+                : json_decode(file_get_contents('php://input'), true);
             $this->validateRequest($requestBody);
 
             if (!empty($requestBody['reversal_amount']) || $requestBody['tran_type'] === 'reverse'){

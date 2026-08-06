@@ -4,7 +4,7 @@ Tags: payments, payment gateway, woocommerce, online payment, merchant, credit c
 Requires at least: 3.5
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 4.1.6
+Stable tag: 4.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,6 +94,7 @@ To set up the payment acceptance plugin, do the following:
 1.	Go to “WooCommerce” > Settings > Payments.
 2. Go to the management of “Flitt” → Management. Let the plugin use this payment method: click “Enable”.
 3. Enter the data you received from Flitt company. (can be found in your merchant's technical settings) You need to fill in two fields — Merchant ID and Merchant secretkey.
+   After the Secret Key has been saved, the field is intentionally shown empty. Leave it empty when changing other settings; enter a value only when rotating the key.
 4. Choose how the payment will be displayed:
 	a. Payment page within the site design
 	b. Payment page in the personal account on the site
@@ -129,6 +130,10 @@ Data sent to Flitt may include (as required for payment processing): order ident
 This third-party service is required for the plugin to function because payment authorization and processing are handled by Flitt.
 **Complaints** (https://flitt.com/wp-content/uploads/2026/06/Complaints-ENG-21.05.pdf). **privacy policy** (https://flitt.com/wp-content/uploads/2026/02/Privacy-Policy-ENG-22.01.2025.pdf)
 
+== Upgrade Notice ==
+= 4.1.8 =
+Security and reliability update: protects saved merchant credentials, adds a Secret Key visibility toggle, hardens callback signature validation, and prevents diagnostic data from invalidating payment signatures.
+
 == Changelog ==
 = 4.0.3 =
 * First release
@@ -151,3 +156,13 @@ This third-party service is required for the plugin to function because payment 
 * Pay By Bank: added an "All available banks" option (selected by default) that sends no payment_method, so Flitt shows every supported bank without a hardcoded list; the individual banks remain selectable
 = 4.1.6 =
 * Fix: reload the checkout when it is restored from the browser back-forward cache (e.g. pressing Back from the Flitt page), so the "Place order" button is clickable again without a manual refresh
+= 4.1.7 =
+* New TBC BNPL logo
+= 4.1.8 =
+* Fixed an issue where saving gateway settings could clear the stored Secret Key
+* Prevented the stored Secret Key from being exposed in the payment settings HTML
+* Removed the production fallback to public test credentials
+* Hardened callback signature validation and handling of form-encoded callback values
+* Excluded diagnostic debug_data from payment signatures so enabling diagnostics cannot cause invalid-signature errors
+* Added redacted WooCommerce audit logging for merchant credential changes
+* Added a Show/Hide control for checking a newly entered Secret Key before saving

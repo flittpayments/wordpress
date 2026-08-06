@@ -56,8 +56,7 @@ class Flitt_WC_Gateway_Installments extends Flitt_WC_Gateway_Alt
         }
 
         return [
-            plugins_url('assets/img/logo.svg', FLITT_WC_BASE_FILE),
-            plugins_url('assets/img/installments-tbc.svg', FLITT_WC_BASE_FILE),
+            plugins_url('assets/img/tbc-installments.png', FLITT_WC_BASE_FILE),
         ];
     }
 }
