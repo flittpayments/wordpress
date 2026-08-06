@@ -132,7 +132,7 @@ This third-party service is required for the plugin to function because payment 
 
 == Upgrade Notice ==
 = 4.1.8 =
-Security and reliability update: protects saved merchant credentials, adds a Secret Key visibility toggle, hardens callback signature validation, and prevents diagnostic data from invalidating payment signatures.
+Security and reliability update: protects saved merchant credentials, adds safe HMAC credential diagnostics and a Secret Key visibility toggle, hardens callback signature validation, and prevents diagnostic data from invalidating payment signatures.
 
 == Changelog ==
 = 4.0.3 =
@@ -166,3 +166,5 @@ Security and reliability update: protects saved merchant credentials, adds a Sec
 * Excluded diagnostic debug_data from payment signatures so enabling diagnostics cannot cause invalid-signature errors
 * Added redacted WooCommerce audit logging for merchant credential changes
 * Added a Show/Hide control for checking a newly entered Secret Key before saving
+* Added explicitly labelled HMAC-SHA256 hashes to debug_data for comparing raw database, WordPress option and runtime Secret Key sources without exposing the key
+* Fully redacted the Secret Key in the diagnostic signature string instead of revealing partial characters

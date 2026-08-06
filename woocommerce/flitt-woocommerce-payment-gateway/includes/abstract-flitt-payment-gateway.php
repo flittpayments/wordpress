@@ -277,11 +277,10 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
             $signatureString = $this->getSignature($requestData, $this->flitt_secret_key, false);
         }
 
-        $maskedSecretKey = $this->maskSecretKey($this->flitt_secret_key);
         $maskedSignature = $signatureString;
 
-        if (!empty($maskedSecretKey)) {
-            $maskedSignature = str_replace($this->flitt_secret_key, $maskedSecretKey, $signatureString);
+        if (!empty($this->flitt_secret_key)) {
+            $maskedSignature = str_replace($this->flitt_secret_key, '[redacted]', $signatureString);
         }
         // Php extensions
         $extensions = get_loaded_extensions();
@@ -313,11 +312,99 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
             'php_sapi' => PHP_SAPI,
             'php_extensions' => $extensions,
             'signature_string' => $maskedSignature,
+            'credential_diagnostics' => $this->getCredentialDiagnostics(),
             'plugin_options' => $options,
             'wordpress_plugins' => $plugins_array
         ];
 
         return $debugData;
+    }
+
+    /**
+     * Compare the Secret Key from the database, WordPress option API and runtime
+     * without exposing any of those values to Flitt debug data.
+     *
+     * Every non-null fingerprint is a truncated HMAC-SHA256 hash keyed with the
+     * site's WordPress auth salt. It can only be used to compare values generated
+     * by this site and cannot be used to recover or verify the Secret Key.
+     *
+     * @return array
+     */
+    protected function getCredentialDiagnostics()
+    {
+        global $wpdb;
+
+        $optionName = 'woocommerce_flitt_settings';
+        $rawOptionValue = null;
+        $rawDbAvailable = isset($wpdb, $wpdb->options) && is_object($wpdb);
+
+        if ($rawDbAvailable) {
+            $rawOptionValue = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
+                    $optionName
+                )
+            );
+        }
+
+        $rawSettings = is_string($rawOptionValue) ? maybe_unserialize($rawOptionValue) : [];
+        $optionSettings = get_option($optionName, []);
+        $rawSecret = is_array($rawSettings) && isset($rawSettings['flitt_secret_key'])
+            ? (string)$rawSettings['flitt_secret_key']
+            : '';
+        $optionSecret = is_array($optionSettings) && isset($optionSettings['flitt_secret_key'])
+            ? (string)$optionSettings['flitt_secret_key']
+            : '';
+        $runtimeSecret = (string)$this->flitt_secret_key;
+
+        $rawHash = $this->getCredentialDiagnosticHash($rawSecret);
+        $optionHash = $this->getCredentialDiagnosticHash($optionSecret);
+        $runtimeHash = $this->getCredentialDiagnosticHash($runtimeSecret);
+
+        return [
+            'scheme' => 'hmac-sha256-wp-auth-v1',
+            'values_are_hmac_hashes' => true,
+            'hashes_note' => 'raw_db, get_option and runtime are 16-character truncated HMAC-SHA256 hashes; Secret Key values are never included.',
+            'raw_db' => $rawHash,
+            'get_option' => $optionHash,
+            'runtime' => $runtimeHash,
+            'raw_db_available' => $rawDbAvailable && null !== $rawOptionValue,
+            'raw_db_secret_present' => '' !== $rawSecret,
+            'get_option_secret_present' => '' !== $optionSecret,
+            'runtime_secret_present' => '' !== $runtimeSecret,
+            'db_matches_option' => $this->credentialDiagnosticHashesMatch($rawHash, $optionHash),
+            'option_matches_runtime' => $this->credentialDiagnosticHashesMatch($optionHash, $runtimeHash),
+            'test_mode' => (bool)$this->test_mode,
+            'runtime_expected_source' => $this->test_mode ? 'test_credentials' : $optionName,
+            'diagnostic_id' => function_exists('wp_generate_uuid4') ? wp_generate_uuid4() : uniqid('flitt-', true),
+        ];
+    }
+
+    /**
+     * Create a site-specific, non-reversible Secret Key diagnostic hash.
+     *
+     * @param string $secret
+     * @return string|null
+     */
+    protected function getCredentialDiagnosticHash($secret)
+    {
+        if (!function_exists('wp_salt')) {
+            return null;
+        }
+
+        return substr(hash_hmac('sha256', (string)$secret, wp_salt('auth')), 0, 16);
+    }
+
+    /**
+     * Safely compare two credential diagnostic hashes.
+     *
+     * @param string|null $left
+     * @param string|null $right
+     * @return bool
+     */
+    protected function credentialDiagnosticHashesMatch($left, $right)
+    {
+        return is_string($left) && is_string($right) && hash_equals($left, $right);
     }
 
     /**
