@@ -4,7 +4,7 @@ Tags: payments, payment gateway, woocommerce, online payment, merchant, credit c
 Requires at least: 3.5
 Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 4.1.8
+Stable tag: 4.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -131,8 +131,8 @@ This third-party service is required for the plugin to function because payment 
 **Complaints** (https://flitt.com/wp-content/uploads/2026/06/Complaints-ENG-21.05.pdf). **privacy policy** (https://flitt.com/wp-content/uploads/2026/02/Privacy-Policy-ENG-22.01.2025.pdf)
 
 == Upgrade Notice ==
-= 4.1.8 =
-Security and reliability update: protects saved merchant credentials, adds safe HMAC credential diagnostics and a Secret Key visibility toggle, hardens callback signature validation, and prevents diagnostic data from invalidating payment signatures.
+= 4.1.9 =
+Reliability update: builds the payment signature delimiter from its numeric ASCII codepoint at runtime instead of using a string literal.
 
 == Changelog ==
 = 4.0.3 =
@@ -168,3 +168,5 @@ Security and reliability update: protects saved merchant credentials, adds safe 
 * Added a Show/Hide control for checking a newly entered Secret Key before saving
 * Added explicitly labelled HMAC-SHA256 hashes to debug_data for comparing raw database, WordPress option and runtime Secret Key sources without exposing the key
 * Fully redacted the Secret Key in the diagnostic signature string instead of revealing partial characters
+= 4.1.9 =
+* Build the payment signature delimiter from its numeric ASCII codepoint at runtime instead of using a string literal

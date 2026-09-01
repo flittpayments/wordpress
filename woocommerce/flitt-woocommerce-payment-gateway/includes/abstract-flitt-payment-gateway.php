@@ -35,6 +35,16 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
     public $redirect_page_id;
 
     /**
+     * ASCII codepoint used to build the signature delimiter at runtime.
+     *
+     * Keep this as object state so OPcache cannot constant-fold chr(124) back
+     * into an interned string literal.
+     *
+     * @var int
+     */
+    private $signatureDelimiterCodepoint = 124;
+
+    /**
      * Flitt_WC_Payment_Gateway constructor.
      */
     public function __construct()
@@ -442,9 +452,10 @@ class Flitt_WC_Payment_Gateway extends WC_Payment_Gateway
         });
         ksort($data);
 
+        $delimiter = chr($this->signatureDelimiterCodepoint);
         $str = $password;
         foreach ($data as $k => $v) {
-            $str .= '|' . $v;
+            $str .= $delimiter . $v;
         }
 
         return $encoded ? sha1($str) : $str;
